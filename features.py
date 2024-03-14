@@ -6,6 +6,8 @@ import sqlparse
 from collections import OrderedDict
 import subprocess
 
+#changed file
+
 def extract_cardinality(plan, level=1, parent=None):
     cardinality = plan.get('Actual Rows', None)
     loop = plan.get('Actual Loops',1)
