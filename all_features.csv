@@ -1,0 +1,1 @@
+id,Original Query,mean_power,Node Type,Parallel Aware,Startup Cost,Total Cost,Plan Rows,Plan Width,Actual Startup Time,Actual Total Time,Actual Rows,Actual Loops,Base Cardinality,Output Cardinality,Input Cardinality Level 1,Input Cardinality Level 2,Input Cardinality Level 3,Input Cardinality Level 4,Input Cardinality Level 5,Input Cardinality Level 6

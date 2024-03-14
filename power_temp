@@ -1,0 +1,67 @@
+import os
+import csv
+import statistics
+
+
+def calculate_power_stats(csv_filename):
+    """Calculates statistics from a power CSV file.
+
+    Args:
+        csv_filename (str): Path to the CSV file containing power data.
+
+    Returns:
+        tuple: A tuple containing the following elements:
+            - query_id (int): The unique identifier for the query (if present in filename).
+            - query (str): The query string (if present in filename).
+            - mean_power (float): The mean power consumption.
+            - all_power_values (list): A list of all power values from the CSV file.
+    """
+
+    query_id = None
+    query = None
+    all_power_values = []
+
+    with open(csv_filename, 'r', newline='') as csv_file:
+        csv_reader = csv.reader(csv_file)
+
+        # Check if header row contains query ID and query string (extracted from filename)
+        if len(csv_reader.peek()) >= 3:
+            header_row = next(csv_reader)
+            try:
+                query_id = int(header_row[0])
+                query = header_row[1]
+            except ValueError:
+                pass  # Ignore errors if parsing fails
+
+        # Extract power values
+        for row in csv_reader:
+            try:
+                power_value = float(row[2])  # Assuming power is the third column
+                all_power_values.append(power_value)
+            except ValueError:
+                pass  # Ignore errors if parsing fails
+
+    mean_power = statistics.mean(all_power_values) if all_power_values else None
+
+    return query_id, query, mean_power, all_power_values
+
+
+def main():
+    """Analyzes all power CSV files in the current directory and prints results."""
+
+    csv_files = [f for f in os.listdir('.') if f.endswith('.csv')]
+
+    for csv_file in csv_files:
+        query_id, query, mean_power, all_power_values = calculate_power_stats(csv_file)
+
+        print(f"\nQuery (ID: {query_id}) - {query if query else 'Unknown'}")
+        print(f"Mean Power: {mean_power:.3f} W")
+
+        if all_power_values:
+            print("All Power Values:")
+            for value in all_power_values:
+                print(f"- {value:.3f} W")
+
+
+if __name__ == "__main__":
+    main()
