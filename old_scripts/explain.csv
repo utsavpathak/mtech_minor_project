@@ -1,0 +1,24 @@
+Original Query,Node Type,Parallel Aware,Startup Cost,Total Cost,Plan Rows,Plan Width,Actual Startup Time,Actual Total Time,Actual Rows,Actual Loops,Misc Details
+"SELECT l_orderkey, o_orderdate, l_extendedprice
+FROM lineitem
+JOIN orders ON lineitem.l_orderkey = orders.o_orderkey
+limit 10",Limit,False,43640.5,43641.81,10,16,758.445,868.324,10,1,
+"SELECT
+    o_orderpriority,
+    count(*) as order_count
+FROM
+    orders
+WHERE
+    o_orderdate >= date '2022-01-01' AND o_orderdate < date '2022-04-01' + interval '3 month'
+    AND EXISTS (
+        SELECT
+            *
+        FROM
+            lineitem
+        WHERE
+            l_orderkey = o_orderkey AND l_commitdate < l_receiptdate
+    )
+GROUP BY
+    o_orderpriority
+ORDER BY
+    o_orderpriority",Aggregate,False,197308.46,197308.48,1,24,847.39,882.873,0,1,

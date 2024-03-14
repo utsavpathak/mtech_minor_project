@@ -1,0 +1,24 @@
+id,Original Query,mean_power,Node Type,Parallel Aware,Startup Cost,Total Cost,Plan Rows,Plan Width,Actual Startup Time,Actual Total Time,Actual Rows,Actual Loops,Base Cardinality,Output Cardinality,Input Cardinality Level 1,Input Cardinality Level 2,Input Cardinality Level 3,Input Cardinality Level 4,Input Cardinality Level 5,Input Cardinality Level 6,Input Cardinality Level 7
+1,"SELECT l_orderkey, o_orderdate, l_extendedprice
+FROM lineitem
+JOIN orders ON lineitem.l_orderkey = orders.o_orderkey
+limit 10",8.93,Limit,False,43640.5,43641.81,10,16,733.519,781.872,10,1,7501215,10,10,10,7,2000405,500000,500000
+2,"SELECT
+    o_orderpriority,
+    count(*) as order_count
+FROM
+    orders
+WHERE
+    o_orderdate >= date '2022-01-01' AND o_orderdate < date '2022-04-01' + interval '3 month'
+    AND EXISTS (
+        SELECT
+            *
+        FROM
+            lineitem
+        WHERE
+            l_orderkey = o_orderkey AND l_commitdate < l_receiptdate
+    )
+GROUP BY
+    o_orderpriority
+ORDER BY
+    o_orderpriority",7.170000000000001,Aggregate,False,197308.46,197308.48,1,24,736.963,774.54,0,1,1500000,0,0,0,0,0,0,1264432,1264432
