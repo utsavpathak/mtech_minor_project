@@ -1,47 +1,9 @@
-id,query,power
+id,query,power,runtime
 1,"SELECT l_orderkey, o_orderdate, l_extendedprice
 FROM lineitem
 JOIN orders ON lineitem.l_orderkey = orders.o_orderkey
-limit 10",11.1
+limit 10",0.574,0.643601
 1,"SELECT l_orderkey, o_orderdate, l_extendedprice
 FROM lineitem
 JOIN orders ON lineitem.l_orderkey = orders.o_orderkey
-limit 10",10.7
-2,"SELECT
-    o_orderpriority,
-    count(*) as order_count
-FROM
-    orders
-WHERE
-    o_orderdate >= date '2022-01-01' AND o_orderdate < date '2022-04-01' + interval '3 month'
-    AND EXISTS (
-        SELECT
-            *
-        FROM
-            lineitem
-        WHERE
-            l_orderkey = o_orderkey AND l_commitdate < l_receiptdate
-    )
-GROUP BY
-    o_orderpriority
-ORDER BY
-    o_orderpriority",10.7
-2,"SELECT
-    o_orderpriority,
-    count(*) as order_count
-FROM
-    orders
-WHERE
-    o_orderdate >= date '2022-01-01' AND o_orderdate < date '2022-04-01' + interval '3 month'
-    AND EXISTS (
-        SELECT
-            *
-        FROM
-            lineitem
-        WHERE
-            l_orderkey = o_orderkey AND l_commitdate < l_receiptdate
-    )
-GROUP BY
-    o_orderpriority
-ORDER BY
-    o_orderpriority",12.2
+limit 10",0.578,0.6334059999999999
