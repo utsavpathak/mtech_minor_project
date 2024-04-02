@@ -1,9 +1,0 @@
-id,query,power,runtime
-1,"SELECT l_orderkey, o_orderdate, l_extendedprice
-FROM lineitem
-JOIN orders ON lineitem.l_orderkey = orders.o_orderkey
-limit 10",0.574,0.643601
-1,"SELECT l_orderkey, o_orderdate, l_extendedprice
-FROM lineitem
-JOIN orders ON lineitem.l_orderkey = orders.o_orderkey
-limit 10",0.578,0.6334059999999999

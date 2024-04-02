@@ -120,8 +120,13 @@ def run_powertop(config):
                     id_mapping[cmd] = next_id
                     next_id += 1
 
+                # Write the query to a temporary file
+                temp_query_file = os.path.join(temp_dir, f"query_{i}.sql")
+                with open(temp_query_file, 'w') as temp_file:
+                    temp_file.write(cmd)
+
                 # psql command to supply as workload to powertop
-                psql_cmd = f"PAGER=cat psql -h {config['postgres']['host']} -U {config['postgres']['user']} -d {config['postgres']['database']} -c '\\timing on' -c '{cmd}' -c '\\timing off' >> temp_output_{i}.txt 2>&1"
+                psql_cmd = f"PAGER=cat psql -h {config['postgres']['host']} -U {config['postgres']['user']} -d {config['postgres']['database']} -c '\\timing on' -f {temp_query_file} -c '\\timing off' >> temp_output_{i}.txt 2>&1"
                 # final powertop command
                 powertop_cmd = f"sudo -E powertop --quiet --workload=\"{psql_cmd}\" --csv={os.path.join(temp_dir, f'query_{i}.csv')} --iteration={config['powertop']['iterations']}"
 
@@ -132,12 +137,18 @@ def run_powertop(config):
                 runtimes = extract_runtime(f'temp_output_{i}.txt')
 
                 # Remove temporary file
-               
+                # Clean up temporary query file
+                os.remove(temp_query_file)
 
                 output_to_csv(config, cmd, i, temp_dir, id_mapping,runtimes)
                 #os.remove('temp_output.txt')
 
     finally:
+
+        # Remove temporary files
+        for i in range(len(commands)):
+            if os.path.exists(f'temp_output_{i}.txt'):
+                os.remove(f'temp_output_{i}.txt')
         # Delete the temporary directory and its contents
         shutil.rmtree(temp_dir)
 

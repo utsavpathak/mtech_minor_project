@@ -81,6 +81,9 @@ with open(result_file, 'w', newline='') as result_csv_file:
         max_cardinality_levels = 0  # Track the maximum number of cardinality levels
         query_id = 1  # Initialize query ID counter
 
+        # Container to store query results for later analysis
+        query_results = []
+
         for query in queries_file.read().split(';'):
             query = query.strip()
             if query:
@@ -103,10 +106,12 @@ with open(result_file, 'w', newline='') as result_csv_file:
                 # Update max_cardinality_levels if necessary
                 max_cardinality_levels = max(max_cardinality_levels, len(cardinalities))
 
+                query_results.append((query, plan, cardinalities))
+
                 cur.close()
 
         # Rewrite the header row with input cardinality columns
-        header = ["id", "Original Query","mean_power", "Node Type", "Parallel Aware", "Startup Cost", "Total Cost", "Plan Rows",
+        header = ["id", "Original Query","mean_power","mean_runtime", "Node Type", "Parallel Aware", "Startup Cost", "Total Cost", "Plan Rows",
                   "Plan Width", "Actual Startup Time", "Actual Total Time", "Actual Rows", "Actual Loops",
                   "Base Cardinality", "Output Cardinality"]
         for i in range(1, max_cardinality_levels + 1):
@@ -118,70 +123,55 @@ with open(result_file, 'w', newline='') as result_csv_file:
         subprocess.run(["python3", "power_measure.py"])  # Execute tool.py
 
         # Execute queries again to write to the CSV file
-        queries_file.seek(0)  # Reset file pointer to the beginning
-        for query in queries_file.read().split(';'):
-            query = query.strip()
-            if query:
-                cur = conn.cursor()
+        for query, plan, cardinalities in query_results:
+            cur = conn.cursor()
 
-                # Execute EXPLAIN ANALYZE to get the query plan
-                cur.execute(f"EXPLAIN (ANALYZE, FORMAT JSON) {query}")
-                result = cur.fetchone()[0]
+            # Extract plan details
+            node_type = plan.get('Node Type', '')
+            parallel_aware = plan.get('Parallel Aware', '')
+            startup_cost = plan.get('Startup Cost', '')
+            total_cost = plan.get('Total Cost', '')
+            plan_rows = plan.get('Plan Rows', '')
+            plan_width = plan.get('Plan Width', '')
+            actual_startup_time = plan.get('Actual Startup Time', '')
+            actual_total_time = plan.get('Actual Total Time', '')
+            actual_rows = plan.get('Actual Rows', '')
+            actual_loops = plan.get('Actual Loops', '')
 
-                # Check if result is a list and get the first element
-                if isinstance(result, list) and result:
-                    result = result[0]
+            # Calculate the base cardinality
+            tables = get_table_names(query)
+            base_cardinality = 0
+            for table in tables:
+                cur.execute(f'SELECT COUNT(*) FROM {table}')
+                count = cur.fetchone()[0]
+                base_cardinality += count
 
-                # Access the 'Plan' key from the dictionary
-                plan = result['Plan']
-                node_type = plan.get('Node Type', '')
-                parallel_aware = plan.get('Parallel Aware', '')
-                startup_cost = plan.get('Startup Cost', '')
-                total_cost = plan.get('Total Cost', '')
-                plan_rows = plan.get('Plan Rows', '')
-                plan_width = plan.get('Plan Width', '')
-                actual_startup_time = plan.get('Actual Startup Time', '')
-                actual_total_time = plan.get('Actual Total Time', '')
-                actual_rows = plan.get('Actual Rows', '')
-                actual_loops = plan.get('Actual Loops', '')
+            # Get the number of rows returned
+            cur.execute(query)
+            output_cardinality = cur.rowcount
 
-                # Extract the input cardinality
-                cardinalities = extract_cardinality(plan)
+            # Call tool.py to generate power data
 
-                # Calculate the base cardinality
-                tables = get_table_names(query)
-                base_cardinality = 0
-                for table in tables:
-                    cur.execute(f'SELECT COUNT(*) FROM {table}')
-                    count = cur.fetchone()[0]
-                    base_cardinality += count
+            # Read mean power for the query from the mean_power CSV file
+            config = configparser.ConfigParser()
+            config.read('feature_config.ini')
+            mean_power_file = config['files']['mean_file']
+            with open(mean_power_file, 'r') as mean_file:
+                csv_reader = csv.reader(mean_file)
+                for row in csv_reader:
+                    if row and row[0].isdigit():  # Check if row[0] is a digit (query ID)
+                        if int(row[0]) == query_id:
+                            mean_power = float(row[2])
+                            mean_runtime = float(row[3])
+                            break
 
-                # Get the number of rows returned
-                cur.execute(query)
-                output_cardinality = cur.rowcount
+            # Write data row to CSV with ID
+            csv_writer.writerow([query_id, query,mean_power,mean_runtime, node_type, parallel_aware, startup_cost, total_cost, plan_rows,
+                                 plan_width, actual_startup_time, actual_total_time, actual_rows, actual_loops,
+                                 base_cardinality, output_cardinality] + list(cardinalities.values()))
 
-                # Call tool.py to generate power data
-                
-
-                # Read mean power for the query from the mean_power CSV file
-                config = configparser.ConfigParser()
-                config.read('feature_config.ini')
-                mean_power_file = config['files']['mean_file']
-                with open(mean_power_file, 'r') as mean_file:
-                    csv_reader = csv.reader(mean_file)
-                    for row in csv_reader:
-                        if row and row[0].isdigit():  # Check if row[0] is a digit (query ID)
-                            if int(row[0]) == query_id:
-                                mean_power = float(row[2])
-                                break
-
-                # Write data row to CSV with ID
-                csv_writer.writerow([query_id, query,mean_power, node_type, parallel_aware, startup_cost, total_cost, plan_rows,
-                                     plan_width, actual_startup_time, actual_total_time, actual_rows, actual_loops,
-                                     base_cardinality, output_cardinality] + list(cardinalities.values()))
-
-                cur.close()
-                query_id += 1  # Increment query ID counter
+            cur.close()
+            query_id += 1  # Increment query ID counter
 
 # Close the database connection
 conn.close()
