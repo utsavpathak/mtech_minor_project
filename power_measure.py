@@ -130,7 +130,7 @@ def run_powertop(config):
                 # final powertop command
                 powertop_cmd = f"sudo -E powertop --quiet --workload=\"{psql_cmd}\" --csv={os.path.join(temp_dir, f'query_{i}.csv')} --iteration={config['powertop']['iterations']}"
 
-                # print(f"\n\nRunning PowerTop for query : {cmd}.")
+                print(f"\n\nRunning PowerTop for query : {cmd}.")
                 os.system(powertop_cmd)
 
                 # Extract runtime from temp_output.txt
