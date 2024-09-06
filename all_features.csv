@@ -1,45 +1,3719 @@
-id,Original Query,mean_power,mean_runtime,Node Type,Parallel Aware,Startup Cost,Total Cost,Plan Rows,Plan Width,Actual Startup Time,Actual Total Time,Actual Rows,Actual Loops,Base Cardinality,Output Cardinality,Input Cardinality Level 1,Input Cardinality Level 2,Input Cardinality Level 3,Input Cardinality Level 4,Input Cardinality Level 5,Input Cardinality Level 6,Input Cardinality Level 7,Input Cardinality Level 8,Input Cardinality Level 9,Input Cardinality Level 10,Input Cardinality Level 11,Input Cardinality Level 12,Input Cardinality Level 13,Input Cardinality Level 14,Input Cardinality Level 15,Input Cardinality Level 16,Input Cardinality Level 17,Input Cardinality Level 18,Input Cardinality Level 19,Input Cardinality Level 20,Input Cardinality Level 21,Input Cardinality Level 22,Input Cardinality Level 23,Input Cardinality Level 24,Input Cardinality Level 25,Input Cardinality Level 26,Input Cardinality Level 27
-1,"select
-	s_acctbal,
-	s_name,
-	n_name,
-	p_partkey,
-	p_mfgr,
-	s_address,
-	s_phone,
-	s_comment
-from
-	part,
-	supplier,
-	partsupp,
-	nation,
-	region
-where
-	p_partkey = ps_partkey
-	and s_suppkey = ps_suppkey
-	and p_size = 25
-	and p_type like '%STEEL'
-	and s_nationkey = n_nationkey
-	and n_regionkey = r_regionkey
-	and r_name = 'EUROPE'
-	and ps_supplycost = (
-		select
-			min(ps_supplycost)
-		from
-			partsupp,
-			supplier,
-			nation,
-			region
-		where
-			p_partkey = ps_partkey
-			and s_suppkey = ps_suppkey
-			and s_nationkey = n_nationkey
-			and n_regionkey = r_regionkey
-			and r_name = 'EUROPE'
-	)
-order by
-	s_acctbal desc,
-	n_name,
-	s_name,
-	p_partkey
-LIMIT 100",1.5579999999999998,84.390047,Limit,False,10637926.65,10637926.66,1,270,88312.215,88312.307,100,1,1010030,100,100,100,459,769,158960,158960,158961,800001,5961,5961,30000,15,15,75,3,3,1228,1228,2440036,12280000,5,5,25,1,1,9760144,4912
+id,Original Query,mean_power,mean_runtime,Node Type,Parallel Aware,Startup Cost,Total Cost,Plan Rows,Plan Width,Actual Startup Time,Actual Total Time,Actual Rows,Actual Loops,Base Cardinality,Output Cardinality,Input Cardinality Level 1,Input Cardinality Level 2,Input Cardinality Level 3,Input Cardinality Level 4,Input Cardinality Level 5,Input Cardinality Level 6,Input Cardinality Level 7,Input Cardinality Level 8,Input Cardinality Level 9,Input Cardinality Level 10,Input Cardinality Level 11,Input Cardinality Level 12,Input Cardinality Level 13,Input Cardinality Level 14,Input Cardinality Level 15,Input Cardinality Level 16,Input Cardinality Level 17,Input Cardinality Level 18,Input Cardinality Level 19,Input Cardinality Level 20,Input Cardinality Level 21,Input Cardinality Level 22,Input Cardinality Level 23,Input Cardinality Level 24,Input Cardinality Level 25,Input Cardinality Level 26,Input Cardinality Level 27,Input Cardinality Level 28
+1,"SELECT
+    l_returnflag,
+    l_linestatus,
+    SUM(l_quantity) AS sum_qty,
+    SUM(l_extendedprice) AS sum_base_price,
+    SUM(l_extendedprice * (1 - l_discount)) AS sum_disc_price,
+    SUM(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS sum_charge,
+    AVG(l_quantity) AS avg_qty,
+    AVG(l_extendedprice) AS avg_price,
+    AVG(l_discount) AS avg_disc,
+    COUNT(*) AS count_order
+FROM
+    lineitem
+WHERE
+    l_shipdate <= DATE '1999-01-01' - INTERVAL '3 days'
+GROUP BY
+    l_returnflag,
+    l_linestatus
+ORDER BY
+    l_returnflag,
+    l_linestatus",1.6834,1.8401445,Aggregate,False,232373.66,232375.61,6,236,1694.764,1698.559,4,1,6001215,4,4,12,12,12,6001215
+2,"SELECT
+    l_returnflag,
+    l_linestatus,
+    SUM(l_quantity) AS sum_qty,
+    SUM(l_extendedprice) AS sum_base_price,
+    SUM(l_extendedprice * (1 - l_discount)) AS sum_disc_price,
+    SUM(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS sum_charge,
+    AVG(l_quantity) AS avg_qty,
+    AVG(l_extendedprice) AS avg_price,
+    AVG(l_discount) AS avg_disc,
+    COUNT(*) AS count_order
+FROM
+    lineitem
+WHERE
+    l_shipdate <= DATE '1998-12-01' - INTERVAL '7 days'
+GROUP BY
+    l_returnflag,
+    l_linestatus
+ORDER BY
+    l_returnflag,
+    l_linestatus",1.6002,1.7243234,Aggregate,False,232299.39,232301.34,6,236,1695.196,1698.967,4,1,6001215,4,4,12,12,12,6000645
+3,"SELECT
+    l_returnflag,
+    l_linestatus,
+    l_shipmode,
+    SUM(l_quantity) AS sum_qty,
+    SUM(l_extendedprice) AS sum_base_price,
+    SUM(l_extendedprice * (1 - l_discount)) AS sum_disc_price,
+    SUM(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS sum_charge,
+    AVG(l_quantity) AS avg_qty,
+    AVG(l_extendedprice) AS avg_price,
+    AVG(l_discount) AS avg_disc,
+    COUNT(*) AS count_order
+FROM
+    lineitem
+WHERE
+    l_shipdate <= DATE '1998-12-01' - INTERVAL '3 days'
+GROUP BY
+    l_returnflag,
+    l_linestatus,
+    l_shipmode
+ORDER BY
+    l_returnflag,
+    l_linestatus,
+    l_shipmode",2.2001,2.5180691,Aggregate,False,238597.79,238611.69,42,247,1836.612,1840.271,28,1,6001215,28,28,84,84,84,6001116
+4,"SELECT
+    l_returnflag,
+    l_linestatus,
+    SUM(l_quantity) AS sum_qty,
+    SUM(l_extendedprice) AS sum_base_price,
+    SUM(l_extendedprice * (1 - l_discount)) AS sum_disc_price,
+    SUM(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS sum_charge,
+    AVG(l_quantity) AS avg_qty,
+    AVG(l_extendedprice) AS avg_price,
+    AVG(l_discount) AS avg_disc,
+    COUNT(*) AS count_order
+FROM
+    lineitem
+WHERE
+    l_shipdate <= DATE '1998-12-01' - INTERVAL '3 days'
+GROUP BY
+    l_returnflag,
+    l_linestatus
+ORDER BY
+    l_linestatus, 
+    l_returnflag",2.7063,3.0841174000000002,Aggregate,False,232346.78,232348.73,6,236,1743.84,1749.231,4,1,6001215,4,4,12,12,12,6001116
+5,"SELECT
+    l_returnflag,
+    SUM(l_quantity) AS sum_qty,
+    SUM(l_extendedprice) AS sum_base_price,
+    SUM(l_extendedprice * (1 - l_discount)) AS sum_disc_price,
+    SUM(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS sum_charge,
+    AVG(l_quantity) AS avg_qty,
+    AVG(l_extendedprice) AS avg_price,
+    AVG(l_discount) AS avg_disc,
+    COUNT(*) AS count_order
+FROM
+    lineitem
+WHERE
+    l_shipdate <= DATE '1998-12-01' - INTERVAL '3 days'
+GROUP BY
+    l_returnflag
+ORDER BY
+    l_returnflag",2.7744999999999997,2.9866128,Aggregate,False,226097.51,226098.47,3,234,1639.345,1643.124,3,1,6001215,3,3,9,9,9,6001116
+6,"SELECT
+    l_returnflag,
+    l_linestatus,
+    SUM(l_quantity) AS sum_qty,
+    MIN(l_extendedprice) AS min_base_price,
+    SUM(l_extendedprice * (1 - l_discount)) AS sum_disc_price,
+    SUM(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS sum_charge,
+    AVG(l_quantity) AS avg_qty,
+    AVG(l_extendedprice) AS avg_price,
+    AVG(l_discount) AS avg_disc,
+    COUNT(*) AS count_order
+FROM
+    lineitem
+WHERE
+    l_shipdate <= DATE '1998-12-01' - INTERVAL '3 days'
+GROUP BY
+    l_returnflag,
+    l_linestatus
+ORDER BY
+    l_returnflag,
+    l_linestatus",2.8104,3.0846712,Aggregate,False,238595.93,238597.9,6,236,1777.954,1781.561,4,1,6001215,4,4,12,12,12,6001116
+7,"SELECT
+    l_returnflag,
+    l_linestatus,
+    SUM(l_quantity) AS sum_qty,
+    MAX(l_extendedprice) AS max_base_price,
+    SUM(l_extendedprice * (1 - l_discount)) AS sum_disc_price,
+    SUM(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS sum_charge,
+    AVG(l_quantity) AS avg_qty,
+    AVG(l_extendedprice) AS avg_price,
+    AVG(l_discount) AS avg_disc,
+    COUNT(*) AS count_order
+FROM
+    lineitem
+WHERE
+    l_shipdate <= DATE '1998-12-01' - INTERVAL '3 days'
+GROUP BY
+    l_returnflag,
+    l_linestatus
+ORDER BY
+    l_returnflag,
+    l_linestatus",2.8594,3.2841692,Aggregate,False,238595.93,238597.9,6,236,1775.674,1779.412,4,1,6001215,4,4,12,12,12,6001116
+8,"SELECT
+    l_returnflag,
+    l_linestatus,
+    SUM(l_quantity) AS sum_qty,
+    SUM(l_extendedprice) AS sum_base_price,
+    SUM(l_extendedprice * (1 - l_discount)) AS sum_disc_price,
+    SUM(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS sum_charge,
+    AVG(l_quantity) AS avg_qty,
+    AVG(l_extendedprice) AS avg_price,
+    AVG(l_discount) AS avg_disc,
+    COUNT(*) AS count_order
+FROM
+    lineitem
+WHERE
+    l_commitdate <= DATE '1998-12-01' - INTERVAL '3 days'
+GROUP BY
+    l_returnflag,
+    l_linestatus
+ORDER BY
+    l_returnflag,
+    l_linestatus",2.6042,2.8347145,Aggregate,False,232373.76,232375.72,6,236,1705.344,1708.987,4,1,6001215,4,4,12,12,12,6001215
+9,"SELECT
+    l_returnflag,
+    l_linestatus,
+    SUM(l_quantity) AS sum_qty,
+    SUM(l_extendedprice) AS sum_base_price,
+    SUM(l_extendedprice * (1 - l_discount)) AS sum_disc_price,
+    SUM(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS sum_charge,
+    AVG(l_quantity) AS avg_qty,
+    AVG(l_extendedprice) AS avg_price,
+    AVG(l_discount) AS avg_disc,
+    COUNT(*) AS count_order
+FROM
+    lineitem
+WHERE
+    l_shipdate <= DATE '1998-12-01' - INTERVAL '3 days'
+    AND l_quantity > 50
+GROUP BY
+    l_returnflag,
+    l_linestatus
+ORDER BY
+    l_returnflag,
+    l_linestatus",0.7663,0.7859727999999999,Aggregate,False,151110.24,151110.31,1,236,276.66,280.221,0,1,6001215,0,0,0,0,0
+10,"SELECT
+    l_shipmode,
+    l_linestatus,
+    SUM(l_quantity) AS sum_qty,
+    SUM(l_extendedprice) AS sum_base_price,
+    SUM(l_extendedprice * (1 - l_discount)) AS sum_disc_price,
+    SUM(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS sum_charge,
+    AVG(l_quantity) AS avg_qty,
+    AVG(l_extendedprice) AS avg_price,
+    AVG(l_discount) AS avg_disc,
+    COUNT(*) AS count_order
+FROM
+    lineitem
+WHERE
+    l_shipdate <= DATE '1998-12-01' - INTERVAL '3 days'
+GROUP BY
+    l_shipmode,
+    l_linestatus
+ORDER BY
+    l_shipmode,
+    l_linestatus",2.1085,2.337703,Aggregate,False,232347.15,232351.71,14,245,1767.64,1771.411,14,1,6001215,14,14,42,42,42,6001116
+11,"-- Q2
+
+
+
+
+SELECT
+    l_returnflag,
+    l_linestatus,
+    SUM(l_quantity) AS sum_qty,
+    SUM(l_extendedprice) AS sum_base_price,
+    SUM(l_extendedprice * (1 - l_discount)) AS sum_disc_price,
+    SUM(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS sum_charge,
+    AVG(l_quantity) AS avg_qty,
+    AVG(l_extendedprice) AS avg_price,
+    AVG(l_discount) AS avg_disc,
+    COUNT(*) AS count_order
+FROM
+    lineitem
+WHERE
+    l_shipdate <= DATE '1998-10-02' - INTERVAL '90' DAY
+GROUP BY
+    l_returnflag,
+    l_linestatus
+ORDER BY
+    l_returnflag,
+    l_linestatus",1.518,1.6545458,Aggregate,False,228960.74,228962.69,6,236,1635.57,1639.433,4,1,6001215,4,4,12,12,12,5776173
+12,"SELECT
+    l_returnflag,
+    l_linestatus,
+    SUM(l_quantity) AS sum_qty,
+    SUM(l_extendedprice) AS sum_base_price,
+    SUM(l_extendedprice * (1 - l_discount)) AS sum_disc_price,
+    SUM(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS sum_charge,
+    AVG(l_quantity) AS avg_qty,
+    AVG(l_extendedprice) AS avg_price,
+    AVG(l_discount) AS avg_disc,
+    COUNT(*) AS count_order
+FROM
+    lineitem
+WHERE
+    l_shipdate <= DATE '1998-09-02' - INTERVAL '60' DAY
+GROUP BY
+    l_returnflag,
+    l_linestatus
+ORDER BY
+    l_returnflag,
+    l_linestatus",1.5289,1.6539148,Aggregate,False,228960.74,228962.69,6,236,1637.823,1641.701,4,1,6001215,4,4,12,12,12,5776173
+13,"SELECT
+    l_returnflag,
+    l_linestatus,
+    l_shipmode,
+    SUM(l_quantity) AS sum_qty,
+    SUM(l_extendedprice) AS sum_base_price,
+    SUM(l_extendedprice * (1 - l_discount)) AS sum_disc_price,
+    SUM(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS sum_charge,
+    AVG(l_quantity) AS avg_qty,
+    AVG(l_extendedprice) AS avg_price,
+    AVG(l_discount) AS avg_disc,
+    COUNT(*) AS count_order
+FROM
+    lineitem
+WHERE
+    l_shipdate <= DATE '1998-09-02' - INTERVAL '90' DAY
+GROUP BY
+    l_returnflag,
+    l_linestatus,
+    l_shipmode
+ORDER BY
+    l_returnflag,
+    l_linestatus,
+    l_shipmode",1.6469,1.7890529,Aggregate,False,233882.21,233896.1,42,247,1756.067,1759.892,28,1,6001215,28,28,84,84,84,5701491
+14,"SELECT
+    l_returnflag,
+    l_linestatus,
+    SUM(l_quantity) AS sum_qty,
+    SUM(l_extendedprice) AS sum_base_price,
+    SUM(l_extendedprice * (1 - l_discount)) AS sum_disc_price,
+    SUM(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS sum_charge,
+    AVG(l_quantity) AS avg_qty,
+    AVG(l_extendedprice) AS avg_price,
+    AVG(l_discount) AS avg_disc,
+    COUNT(*) AS count_order
+FROM
+    lineitem
+WHERE
+    l_shipdate <= DATE '1998-09-02' - INTERVAL '90' DAY
+GROUP BY
+    l_returnflag,
+    l_linestatus
+ORDER BY
+    l_linestatus, 
+    l_returnflag",1.5241,1.6483037,Aggregate,False,227945.56,227947.52,6,236,1617.738,1621.573,4,1,6001215,4,4,12,12,12,5701491
+15,"SELECT
+    l_returnflag,
+    SUM(l_quantity) AS sum_qty,
+    SUM(l_extendedprice) AS sum_base_price,
+    SUM(l_extendedprice * (1 - l_discount)) AS sum_disc_price,
+    SUM(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS sum_charge,
+    AVG(l_quantity) AS avg_qty,
+    AVG(l_extendedprice) AS avg_price,
+    AVG(l_discount) AS avg_disc,
+    COUNT(*) AS count_order
+FROM
+    lineitem
+WHERE
+    l_shipdate <= DATE '1998-09-02' - INTERVAL '90' DAY
+GROUP BY
+    l_returnflag
+ORDER BY
+    l_returnflag",1.5581,1.682369,Aggregate,False,222010.67,222011.63,3,234,1546.727,1550.493,3,1,6001215,3,3,9,9,9,5701491
+16,"SELECT
+    l_returnflag,
+    l_linestatus,
+    SUM(l_quantity) AS sum_qty,
+    MIN(l_extendedprice) AS min_base_price,
+    SUM(l_extendedprice * (1 - l_discount)) AS sum_disc_price,
+    SUM(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS sum_charge,
+    AVG(l_quantity) AS avg_qty,
+    AVG(l_extendedprice) AS avg_price,
+    AVG(l_discount) AS avg_disc,
+    COUNT(*) AS count_order
+FROM
+    lineitem
+WHERE
+    l_shipdate <= DATE '1998-09-02' - INTERVAL '90' DAY
+GROUP BY
+    l_returnflag,
+    l_linestatus
+ORDER BY
+    l_returnflag,
+    l_linestatus",1.573,1.7105677000000001,Aggregate,False,233880.34,233882.31,6,236,1730.52,1734.43,4,1,6001215,4,4,12,12,12,5701491
+17,"SELECT
+    l_returnflag,
+    l_linestatus,
+    SUM(l_quantity) AS sum_qty,
+    MAX(l_extendedprice) AS max_base_price,
+    SUM(l_extendedprice * (1 - l_discount)) AS sum_disc_price,
+    SUM(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS sum_charge,
+    AVG(l_quantity) AS avg_qty,
+    AVG(l_extendedprice) AS avg_price,
+    AVG(l_discount) AS avg_disc,
+    COUNT(*) AS count_order
+FROM
+    lineitem
+WHERE
+    l_shipdate <= DATE '1998-09-02' - INTERVAL '90' DAY
+GROUP BY
+    l_returnflag,
+    l_linestatus
+ORDER BY
+    l_returnflag,
+    l_linestatus",1.5779,1.7140855,Aggregate,False,233880.34,233882.31,6,236,1703.288,1707.172,4,1,6001215,4,4,12,12,12,5701491
+18,"SELECT
+    l_returnflag,
+    l_linestatus,
+    SUM(l_quantity) AS sum_qty,
+    SUM(l_extendedprice) AS sum_base_price,
+    SUM(l_extendedprice * (1 - l_discount)) AS sum_disc_price,
+    SUM(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS sum_charge,
+    AVG(l_quantity) AS avg_qty,
+    AVG(l_extendedprice) AS avg_price,
+    AVG(l_discount) AS avg_disc,
+    COUNT(*) AS count_order
+FROM
+    lineitem
+WHERE
+    l_commitdate <= DATE '1998-09-02' - INTERVAL '90' DAY
+GROUP BY
+    l_returnflag,
+    l_linestatus
+ORDER BY
+    l_returnflag,
+    l_linestatus",1.5061,1.6371925999999999,Aggregate,False,227903.95,227905.9,6,236,1632.765,1636.572,4,1,6001215,4,4,12,12,12,5704008
+19,"SELECT
+    l_returnflag,
+    l_linestatus,
+    SUM(l_quantity) AS sum_qty,
+    SUM(l_extendedprice) AS sum_base_price,
+    SUM(l_extendedprice * (1 - l_discount)) AS sum_disc_price,
+    SUM(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS sum_charge,
+    AVG(l_quantity) AS avg_qty,
+    AVG(l_extendedprice) AS avg_price,
+    AVG(l_discount) AS avg_disc,
+    COUNT(*) AS count_order
+FROM
+    lineitem
+WHERE
+    l_shipdate <= DATE '1998-09-02' - INTERVAL '90' DAY
+    AND l_quantity > 50
+GROUP BY
+    l_returnflag,
+    l_linestatus
+ORDER BY
+    l_returnflag,
+    l_linestatus",0.28759999999999997,0.32823389999999997,Aggregate,False,151110.24,151110.31,1,236,275.505,279.185,0,1,6001215,0,0,0,0,0
+20,"SELECT
+    l_shipmode,
+    l_linestatus,
+    SUM(l_quantity) AS sum_qty,
+    SUM(l_extendedprice) AS sum_base_price,
+    SUM(l_extendedprice * (1 - l_discount)) AS sum_disc_price,
+    SUM(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS sum_charge,
+    AVG(l_quantity) AS avg_qty,
+    AVG(l_extendedprice) AS avg_price,
+    AVG(l_discount) AS avg_disc,
+    COUNT(*) AS count_order
+FROM
+    lineitem
+WHERE
+    l_shipdate <= DATE '1998-09-02' - INTERVAL '90' DAY
+GROUP BY
+    l_shipmode,
+    l_linestatus
+ORDER BY
+    l_shipmode,
+    l_linestatus",1.5805,1.7123898,Aggregate,False,227945.93,227950.49,14,245,1692.712,1696.368,14,1,6001215,14,14,42,42,42,5701491
+21,"--Q3
+
+
+
+
+SELECT
+    s_acctbal,
+    s_name,
+    n_name,
+    p_partkey,
+    p_mfgr,
+    s_address,
+    s_phone,
+    s_comment
+FROM
+    part,
+    supplier,
+    partsupp,
+    nation,
+    region
+WHERE
+    p_partkey = ps_partkey
+    AND s_suppkey = ps_suppkey
+    AND p_size = 30
+    AND p_type LIKE '%STEEL'
+    AND s_nationkey = n_nationkey
+    AND n_regionkey = r_regionkey
+    AND r_name = 'EUROPE'
+    AND ps_supplycost = (
+        SELECT
+            MIN(ps_supplycost)
+        FROM
+            partsupp,
+            supplier,
+            nation,
+            region
+        WHERE
+            p_partkey = ps_partkey
+            AND s_suppkey = ps_suppkey
+            AND s_nationkey = n_nationkey
+            AND n_regionkey = r_regionkey
+            AND r_name = 'EUROPE'
+    )
+ORDER BY
+    s_acctbal DESC,
+    n_name,
+    s_name,
+    p_partkey
+LIMIT 100",0.23,0.17707130000000001,Limit,False,35009.62,35009.62,1,270,184.246,184.342,100,1,1010030,100,100,100,489,826,825,158595,158960,158961,800001,5961,5961,30000,15,15,75,3,3,654,1308,2616,2616,2616,2616,2616,0,0
+22,"SELECT
+    s_acctbal,
+    s_name,
+    n_name,
+    p_partkey,
+    p_mfgr,
+    s_address,
+    s_phone,
+    s_comment
+FROM
+    part,
+    supplier,
+    partsupp,
+    nation,
+    region
+WHERE
+    p_partkey = ps_partkey
+    AND s_suppkey = ps_suppkey
+    AND p_size = 25
+    AND p_type LIKE '%ALUMINUM'
+    AND s_nationkey = n_nationkey
+    AND n_regionkey = r_regionkey
+    AND r_name = 'EUROPE'
+    AND ps_supplycost = (
+        SELECT
+            MIN(ps_supplycost)
+        FROM
+            partsupp,
+            supplier,
+            nation,
+            region
+        WHERE
+            p_partkey = ps_partkey
+            AND s_suppkey = ps_suppkey
+            AND s_nationkey = n_nationkey
+            AND n_regionkey = r_regionkey
+            AND r_name = 'EUROPE'
+    )
+ORDER BY
+    s_acctbal DESC,
+    n_name,
+    s_name,
+    p_partkey
+LIMIT 100",0.0177,0.013870200000000001,Limit,False,6616.24,6616.25,1,270,16.521,18.706,0,1,1010030,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+23,"SELECT
+    s_acctbal,
+    s_name,
+    n_name,
+    p_partkey,
+    p_mfgr,
+    s_address,
+    s_phone,
+    s_comment
+FROM
+    part,
+    supplier,
+    partsupp,
+    nation,
+    region
+WHERE
+    p_partkey = ps_partkey
+    AND s_suppkey = ps_suppkey
+    AND p_size = 25
+    AND p_type LIKE '%STEEL'
+    AND s_nationkey = n_nationkey
+    AND n_regionkey = r_regionkey
+    AND r_name = 'EUROPE'
+    AND ps_supplycost = (
+        SELECT
+            MIN(ps_supplycost)
+        FROM
+            partsupp,
+            supplier,
+            nation,
+            region
+        WHERE
+            p_partkey = ps_partkey
+            AND s_suppkey = ps_suppkey
+            AND s_nationkey = n_nationkey
+            AND n_regionkey = r_regionkey
+            AND r_name = 'EUROPE'
+    )
+ORDER BY
+    n_name,
+    s_name,
+    s_acctbal DESC,
+    p_partkey
+LIMIT 100",0.3246,0.4568592,Limit,False,34952.88,34952.89,1,270,174.255,174.392,100,1,1010030,100,100,100,459,769,768,158789,158960,158961,800001,5961,5961,30000,15,15,75,3,3,616,1232,2464,2464,2464,2464,2464,0,0
+24,"SELECT
+    s_acctbal,
+    s_name,
+    n_name,
+    p_partkey,
+    p_brand,
+    s_address,
+    s_phone,
+    s_comment
+FROM
+    part,
+    supplier,
+    partsupp,
+    nation,
+    region
+WHERE
+    p_partkey = ps_partkey
+    AND s_suppkey = ps_suppkey
+    AND p_size = 25
+    AND p_type LIKE '%STEEL'
+    AND s_nationkey = n_nationkey
+    AND n_regionkey = r_regionkey
+    AND r_name = 'EUROPE'
+    AND ps_supplycost = (
+        SELECT
+            MIN(ps_supplycost)
+        FROM
+            partsupp,
+            supplier,
+            nation,
+            region
+        WHERE
+            p_partkey = ps_partkey
+            AND s_suppkey = ps_suppkey
+            AND s_nationkey = n_nationkey
+            AND n_regionkey = r_regionkey
+            AND r_name = 'EUROPE'
+    )
+ORDER BY
+    s_acctbal DESC,
+    n_name,
+    s_name,
+    p_partkey
+LIMIT 100",0.3714,0.5515015999999999,Limit,False,34952.88,34952.89,1,255,175.298,175.411,100,1,1010030,100,100,100,459,769,768,158789,158960,158961,800001,5961,5961,30000,15,15,75,3,3,616,1232,2464,2464,2464,2464,2464,0,0
+25,"SELECT
+    s_acctbal,
+    s_name,
+    n_name,
+    p_partkey,
+    p_mfgr,
+    s_address,
+    s_phone,
+    s_comment
+FROM
+    part,
+    supplier,
+    partsupp,
+    nation,
+    region
+WHERE
+    p_partkey = ps_partkey
+    AND s_suppkey = ps_suppkey
+    AND p_size = 25
+    AND p_type LIKE '%STEEL'
+    AND s_nationkey = n_nationkey
+    AND n_regionkey = r_regionkey
+    AND r_name = 'EUROPE'
+    AND s_acctbal > 1000
+    AND ps_supplycost = (
+        SELECT
+            MIN(ps_supplycost)
+        FROM
+            partsupp,
+            supplier,
+            nation,
+            region
+        WHERE
+            p_partkey = ps_partkey
+            AND s_suppkey = ps_suppkey
+            AND s_nationkey = n_nationkey
+            AND n_regionkey = r_regionkey
+            AND r_name = 'EUROPE'
+    )
+ORDER BY
+    s_acctbal DESC,
+    n_name,
+    s_name,
+    p_partkey
+LIMIT 100",0.09670000000000001,0.1237125,Limit,False,34623.13,34623.14,1,270,155.103,155.202,100,1,1010030,100,100,100,375,769,768,130497,130640,130641,800001,4899,4899,24591,15,15,75,3,3,511,1022,2044,2044,2044,2044,2044,0,0
+26,"-- Q4
+
+SELECT
+    l_returnflag,
+    l_linestatus,
+    SUM(l_quantity) AS sum_qty,
+    SUM(l_extendedprice) AS sum_base_price,
+    SUM(l_extendedprice * (1 - l_discount)) AS sum_disc_price,
+    SUM(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS sum_charge,
+    AVG(l_quantity) AS avg_qty,
+    AVG(l_extendedprice) AS avg_price,
+    AVG(l_discount) AS avg_disc,
+    COUNT(*) AS count_order
+FROM
+    lineitem
+WHERE
+    l_shipdate <= DATE '1998-11-01' - INTERVAL '90 days'
+GROUP BY
+    l_returnflag,
+    l_linestatus
+ORDER BY
+    l_returnflag,
+    l_linestatus",1.5387,1.6700155,Aggregate,False,230064.67,230066.63,6,236,1655.74,1658.978,4,1,6001215,4,4,12,12,12,5850870
+27,"SELECT
+    l_shipmode,
+    l_linestatus,
+    SUM(l_quantity) AS sum_qty,
+    SUM(l_extendedprice) AS sum_base_price,
+    SUM(l_extendedprice * (1 - l_discount)) AS sum_disc_price,
+    SUM(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS sum_charge,
+    AVG(l_quantity) AS avg_qty,
+    AVG(l_extendedprice) AS avg_price,
+    AVG(l_discount) AS avg_disc,
+    COUNT(*) AS count_order
+FROM
+    lineitem
+WHERE
+    l_shipdate <= DATE '1998-12-01' - INTERVAL '90 days'
+GROUP BY
+    l_shipmode,
+    l_linestatus
+ORDER BY
+    l_shipmode,
+    l_linestatus",1.6340999999999999,1.7621702,Aggregate,False,231027.86,231032.42,14,245,1753.81,1756.966,14,1,6001215,14,14,42,42,42,5916591
+28,"SELECT
+    l_returnflag,
+    l_linestatus,
+    SUM(l_quantity) AS sum_qty,
+    SUM(l_extendedprice) AS sum_base_price,
+    SUM(l_extendedprice * (1 - l_discount)) AS sum_disc_price,
+    SUM(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS sum_charge,
+    AVG(l_quantity) AS avg_qty,
+    AVG(l_extendedprice) AS avg_price,
+    AVG(l_discount) AS avg_disc,
+    COUNT(*) AS count_order
+FROM
+    lineitem
+WHERE
+    l_shipdate <= DATE '1998-12-01' - INTERVAL '90 days'
+    AND l_discount < 0.05
+GROUP BY
+    l_returnflag,
+    l_linestatus
+ORDER BY
+    l_returnflag,
+    l_linestatus",0.9316,1.0160027999999999,Aggregate,False,190515.36,190517.32,6,236,971.656,974.883,4,1,6001215,4,4,12,12,12,2689332
+29,"SELECT
+    l_returnflag,
+    l_linestatus,
+    SUM(l_quantity) AS sum_qty,
+    SUM(l_extendedprice) AS sum_base_price,
+    SUM(l_extendedprice * (1 - l_discount)) AS sum_disc_price,
+    SUM(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS sum_charge,
+    AVG(l_quantity) AS avg_qty,
+    AVG(l_extendedprice) AS avg_price,
+    AVG(l_discount) AS avg_disc,
+    COUNT(*) AS count_order
+FROM
+    lineitem
+WHERE
+    l_shipdate <= DATE '1998-12-01' - INTERVAL '90 days'
+GROUP BY
+    l_returnflag,
+    l_linestatus
+ORDER BY
+    l_linestatus,
+    l_returnflag",1.5699,1.7100895,Aggregate,False,231027.49,231029.44,6,236,1673.066,1676.212,4,1,6001215,4,4,12,12,12,5916591
+30,"SELECT
+    l_returnflag,
+    l_linestatus,
+    SUM(l_quantity) AS sum_qty,
+    SUM(l_extendedprice) AS sum_base_price,
+    SUM(l_extendedprice * (1 - l_discount)) AS sum_disc_price,
+    SUM(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS sum_charge,
+    AVG(l_quantity) AS avg_qty,
+    AVG(l_extendedprice) AS avg_price,
+    AVG(l_discount) AS avg_disc
+FROM
+    lineitem
+WHERE
+    l_shipdate <= DATE '1998-12-01' - INTERVAL '90 days'
+GROUP BY
+    l_returnflag,
+    l_linestatus
+ORDER BY
+    l_returnflag,
+    l_linestatus",1.593,1.7096901,Aggregate,False,224872.57,224874.5,6,228,1669.683,1672.866,4,1,6001215,4,4,12,12,12,5916591
+31,"SELECT
+    l_returnflag,
+    l_linestatus,
+    SUM(l_quantity) AS sum_qty,
+    SUM(l_extendedprice) AS sum_base_price,
+    SUM(l_extendedprice * (1 - l_discount)) AS sum_disc_price,
+    SUM(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS sum_charge,
+    MIN(l_quantity) AS min_qty,
+    MIN(l_extendedprice) AS min_price,
+    MIN(l_discount) AS min_disc,
+    COUNT(*) AS count_order
+FROM
+    lineitem
+WHERE
+    l_shipdate <= DATE '1998-12-01' - INTERVAL '90 days'
+GROUP BY
+    l_returnflag,
+    l_linestatus
+ORDER BY
+    l_returnflag,
+    l_linestatus",1.71,1.8462616,Aggregate,False,243337.3,243339.24,6,236,1781.349,1784.674,4,1,6001215,4,4,12,12,12,5916591
+32,"SELECT
+    l_returnflag,
+    l_linestatus,
+    SUM(l_quantity) AS sum_qty,
+    SUM(l_extendedprice) AS sum_base_price,
+    SUM(l_extendedprice * (1 - l_discount)) AS sum_disc_price,
+    SUM(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS sum_charge,
+    AVG(l_quantity) AS avg_qty,
+    AVG(l_extendedprice) AS avg_price,
+    AVG(l_discount) AS avg_disc,
+    COUNT(*) AS count_order
+FROM
+    lineitem
+WHERE
+    l_shipdate <= DATE '1998-12-01' - INTERVAL '60 days'
+GROUP BY
+    l_returnflag,
+    l_linestatus
+ORDER BY
+    l_returnflag,
+    l_linestatus",1.5828,1.7179509,Aggregate,False,231671.52,231673.48,6,236,1681.805,1684.932,4,1,6001215,4,4,12,12,12,5963388
+33,"SELECT
+    l_returnflag,
+    l_linestatus,
+    SUM(l_quantity) AS sum_qty,
+    SUM(l_extendedprice) AS sum_base_price,
+    SUM(l_extendedprice * (1 - l_discount)) AS sum_disc_price,
+    SUM(l_extendedprice * (1 - l_discount) * (1 + l_tax)) AS sum_charge,
+    AVG(l_quantity) AS avg_qty,
+    AVG(l_extendedprice) AS avg_price,
+    COUNT(*) AS count_order
+FROM
+    lineitem
+WHERE
+    l_shipdate <= DATE '1998-12-01' - INTERVAL '90 days'
+GROUP BY
+    l_returnflag,
+    l_linestatus
+ORDER BY
+    l_returnflag,
+    l_linestatus",1.526,1.6532522,Aggregate,False,224872.56,224874.44,6,204,1623.621,1626.761,4,1,6001215,4,4,12,12,12,5916591
+34,"-- Q5
+
+
+SELECT
+    s_acctbal,
+    s_name,
+    n_name,
+    p_partkey,
+    p_mfgr,
+    s_address,
+    s_phone,
+    s_comment
+FROM
+    part,
+    supplier,
+    partsupp,
+    nation,
+    region
+WHERE
+    p_partkey = ps_partkey
+    AND s_suppkey = ps_suppkey
+    AND p_size = 20
+    AND p_type LIKE '%BRASS%'
+    AND s_nationkey = n_nationkey
+    AND n_regionkey = r_regionkey
+    AND r_name = 'EUROPE'
+    AND ps_supplycost = (
+        SELECT
+            MIN(ps_supplycost)
+        FROM
+            partsupp,
+            supplier,
+            nation,
+            region
+        WHERE
+            p_partkey = ps_partkey
+            AND s_suppkey = ps_suppkey
+            AND s_nationkey = n_nationkey
+            AND n_regionkey = r_regionkey
+            AND r_name = 'EUROPE'
+    )
+ORDER BY
+    s_acctbal DESC,
+    n_name,
+    s_name,
+    p_partkey",0.1141,0.14832510000000002,Sort,False,34955.48,34955.48,1,270,173.582,173.719,476,1,1010030,476,476,476,813,813,158884,158960,158961,800001,5961,5961,30000,15,15,75,3,3,646,1292,2584,2584,2584,2584,2584,0,0
+35,"SELECT
+    s_acctbal,
+    s_name,
+    n_name,
+    p_partkey,
+    p_mfgr,
+    s_address,
+    s_phone,
+    s_comment
+FROM
+    part,
+    supplier,
+    partsupp,
+    nation,
+    region
+WHERE
+    p_partkey = ps_partkey
+    AND s_suppkey = ps_suppkey
+    AND p_size = 15
+    AND p_type LIKE '%STEEL%'
+    AND s_nationkey = n_nationkey
+    AND n_regionkey = r_regionkey
+    AND r_name = 'EUROPE'
+    AND ps_supplycost = (
+        SELECT
+            MIN(ps_supplycost)
+        FROM
+            partsupp,
+            supplier,
+            nation,
+            region
+        WHERE
+            p_partkey = ps_partkey
+            AND s_suppkey = ps_suppkey
+            AND s_nationkey = n_nationkey
+            AND n_regionkey = r_regionkey
+            AND r_name = 'EUROPE'
+    )
+ORDER BY
+    s_acctbal DESC,
+    n_name,
+    s_name,
+    p_partkey",0.1171,0.1490472,Sort,False,34899.22,34899.22,1,270,173.378,173.494,458,1,1010030,458,458,458,774,774,158603,158960,158961,800001,5961,5961,30000,15,15,75,3,3,629,1258,2516,2516,2516,2516,2516,0,0
+36,"SELECT
+    s_acctbal,
+    s_name,
+    n_name,
+    p_partkey,
+    p_mfgr,
+    s_address,
+    s_phone,
+    s_comment
+FROM
+    part,
+    supplier,
+    partsupp,
+    nation,
+    region
+WHERE
+    p_partkey = ps_partkey
+    AND s_suppkey = ps_suppkey
+    AND p_size = 15
+    AND p_type LIKE '%BRASS%'
+    AND s_nationkey = n_nationkey
+    AND n_regionkey = r_regionkey
+    AND r_name = 'EUROPE'
+    AND s_acctbal > 1000
+    AND ps_supplycost = (
+        SELECT
+            MIN(ps_supplycost)
+        FROM
+            partsupp,
+            supplier,
+            nation,
+            region
+        WHERE
+            p_partkey = ps_partkey
+            AND s_suppkey = ps_suppkey
+            AND s_nationkey = n_nationkey
+            AND n_regionkey = r_regionkey
+            AND r_name = 'EUROPE'
+    )
+ORDER BY
+    s_acctbal DESC,
+    n_name,
+    s_name,
+    p_partkey",0.1091,0.1331813,Sort,False,34622.42,34622.43,1,270,155.54,155.642,377,1,1010030,377,377,377,747,747,130469,130640,130641,800001,4899,4899,24591,15,15,75,3,3,528,1056,2112,2112,2112,2112,2112,0,0
+37,"SELECT
+    s_acctbal,
+    s_name,
+    n_name,
+    p_partkey,
+    p_mfgr,
+    s_address,
+    s_phone,
+    s_comment
+FROM
+    part,
+    supplier,
+    partsupp,
+    nation,
+    region
+WHERE
+    p_partkey = ps_partkey
+    AND s_suppkey = ps_suppkey
+    AND p_size = 15
+    AND p_type LIKE '%BRASS%'
+    AND s_nationkey = n_nationkey
+    AND n_regionkey = r_regionkey
+    AND r_name = 'EUROPE'
+    AND ps_supplycost = (
+        SELECT
+            MIN(ps_supplycost)
+        FROM
+            partsupp,
+            supplier,
+            nation,
+            region
+        WHERE
+            p_partkey = ps_partkey
+            AND s_suppkey = ps_suppkey
+            AND s_nationkey = n_nationkey
+            AND n_regionkey = r_regionkey
+            AND r_name = 'EUROPE'
+    )
+ORDER BY
+    n_name,
+    s_acctbal DESC,
+    s_name,
+    p_partkey",0.111,0.1469299,Sort,False,34902.64,34902.64,1,270,174.009,174.226,460,1,1010030,460,460,460,747,747,158755,158960,158961,800001,5961,5961,30000,15,15,75,3,3,642,1284,2568,2568,2568,2568,2568,0,0
+38,"SELECT
+    s_acctbal,
+    s_name,
+    n_name,
+    p_partkey,
+    p_mfgr,
+    s_address,
+    s_phone,
+    s_comment
+FROM
+    part,
+    supplier,
+    partsupp,
+    nation,
+    region
+WHERE
+    p_partkey = ps_partkey
+    AND s_suppkey = ps_suppkey
+    AND p_size = 15
+    AND p_type LIKE '%BRASS%'
+    AND s_nationkey = n_nationkey
+    AND n_regionkey = r_regionkey
+    AND r_name = 'EUROPE'
+    AND ps_supplycost = (
+        SELECT
+            MIN(ps_supplycost)
+        FROM
+            partsupp,
+            supplier,
+            nation,
+            region
+        WHERE
+            p_partkey = ps_partkey
+            AND s_suppkey = ps_suppkey
+            AND s_nationkey = n_nationkey
+            AND n_regionkey = r_regionkey
+            AND r_name = 'EUROPE'
+    )
+ORDER BY
+    s_acctbal DESC,
+    n_name,
+    s_name,
+    p_partkey",0.1062,0.14314649999999998,Sort,False,34902.64,34902.64,1,270,173.336,173.44,460,1,1010030,460,460,460,747,747,158755,158960,158961,800001,5961,5961,30000,15,15,75,3,3,642,1284,2568,2568,2568,2568,2568,0,0
+39,"SELECT
+    s_acctbal,
+    s_name,
+    n_name,
+    p_partkey,
+    p_mfgr,
+    s_address,
+    s_phone,
+    s_comment
+FROM
+    part,
+    supplier,
+    partsupp,
+    nation,
+    region
+WHERE
+    p_partkey = ps_partkey
+    AND s_suppkey = ps_suppkey
+    AND p_size = 15
+    AND p_type LIKE '%BRASS%'
+    AND s_nationkey = n_nationkey
+    AND n_regionkey = r_regionkey
+    AND r_name = 'EUROPE'
+    AND ps_supplycost = (
+        SELECT
+            MAX(ps_supplycost)
+        FROM
+            partsupp,
+            supplier,
+            nation,
+            region
+        WHERE
+            p_partkey = ps_partkey
+            AND s_suppkey = ps_suppkey
+            AND s_nationkey = n_nationkey
+            AND n_regionkey = r_regionkey
+            AND r_name = 'EUROPE'
+    )
+ORDER BY
+    s_acctbal DESC,
+    n_name,
+    s_name,
+    p_partkey",0.1085,0.1447346,Sort,False,34902.64,34902.64,1,270,173.164,173.328,460,1,1010030,460,460,460,747,747,158755,158960,158961,800001,5961,5961,30000,15,15,75,3,3,642,1284,2568,2568,2568,2568,2568,0,0
+40,"SELECT
+    s_acctbal,
+    s_name,
+    n_name,
+    p_partkey,
+    p_mfgr,
+    s_address,
+    s_phone,
+    s_comment
+FROM
+    part,
+    supplier,
+    partsupp,
+    nation,
+    region
+WHERE
+    p_partkey = ps_partkey
+    AND s_suppkey = ps_suppkey
+    AND p_size = 15
+    AND p_type LIKE '%BRASS%'
+    AND s_nationkey = n_nationkey
+    AND n_regionkey = r_regionkey
+    AND r_name = 'ASIA'
+    AND ps_supplycost = (
+        SELECT
+            MIN(ps_supplycost)
+        FROM
+            partsupp,
+            supplier,
+            nation,
+            region
+        WHERE
+            p_partkey = ps_partkey
+            AND s_suppkey = ps_suppkey
+            AND s_nationkey = n_nationkey
+            AND n_regionkey = r_regionkey
+            AND r_name = 'ASIA'
+    )
+ORDER BY
+    s_acctbal DESC,
+    n_name,
+    s_name,
+    p_partkey",0.1091,0.1480477,Sort,False,34902.64,34902.64,1,270,174.295,174.468,423,1,1010030,423,423,423,747,747,160037,160240,160239,800001,6009,6009,30000,15,15,75,3,3,571,1142,2284,2284,2284,2284,2284,0,0
+41,"SELECT
+    s_acctbal,
+    s_name,
+    n_name,
+    p_partkey,
+    p_mfgr,
+    s_address,
+    s_phone,
+    s_comment
+FROM
+    part,
+    supplier,
+    partsupp,
+    nation,
+    region
+WHERE
+    p_partkey = ps_partkey
+    AND s_suppkey = ps_suppkey
+    AND p_size = 15
+    AND p_type LIKE '%BRASS%'
+    AND s_nationkey = n_nationkey
+    AND n_regionkey = r_regionkey
+    AND r_name = 'EUROPE'
+    AND ps_supplycost = (
+        SELECT
+            AVG(ps_supplycost)
+        FROM
+            partsupp,
+            supplier,
+            nation,
+            region
+        WHERE
+            p_partkey = ps_partkey
+            AND s_suppkey = ps_suppkey
+            AND s_nationkey = n_nationkey
+            AND n_regionkey = r_regionkey
+            AND r_name = 'EUROPE'
+    )
+ORDER BY
+    s_acctbal DESC,
+    n_name,
+    s_name,
+    p_partkey",0.107,0.1433168,Sort,False,34902.68,34902.69,1,270,174.373,174.471,309,1,1010030,309,309,309,747,747,158755,158960,158961,800001,5961,5961,30000,15,15,75,3,3,642,1284,2568,2568,2568,2568,2568,0,0
+42,"SELECT
+    s_name,
+    n_name,
+    p_partkey,
+    p_mfgr,
+    s_phone
+FROM
+    part,
+    supplier,
+    partsupp,
+    nation,
+    region
+WHERE
+    p_partkey = ps_partkey
+    AND s_suppkey = ps_suppkey
+    AND p_size = 15
+    AND p_type LIKE '%BRASS%'
+    AND s_nationkey = n_nationkey
+    AND n_regionkey = r_regionkey
+    AND r_name = 'EUROPE'
+    AND ps_supplycost = (
+        SELECT
+            MIN(ps_supplycost)
+        FROM
+            partsupp,
+            supplier,
+            nation,
+            region
+        WHERE
+            p_partkey = ps_partkey
+            AND s_suppkey = ps_suppkey
+            AND s_nationkey = n_nationkey
+            AND n_regionkey = r_regionkey
+            AND r_name = 'EUROPE'
+    )
+ORDER BY
+    s_acctbal DESC,
+    n_name,
+    s_name,
+    p_partkey",0.09860000000000001,0.1225177,Sort,False,34902.64,34902.64,1,182,152.518,152.616,460,1,1010030,460,460,460,747,747,158755,158960,158961,800001,5961,5961,30000,15,15,75,3,3,642,1284,2568,2568,2568,2568,2568,0,0
+43,"-- Original query 6
+
+
+
+
+-- Query 1: Change the date range in the WHERE clause
+SELECT
+    o_orderpriority,
+    COUNT(*) AS order_count
+FROM
+    orders
+WHERE
+    o_orderdate >= DATE '1993-07-01' - INTERVAL '1 month'
+    AND o_orderdate < DATE '1993-07-01' + INTERVAL '3 month'
+    AND EXISTS (
+        SELECT
+            *
+        FROM
+            lineitem
+        WHERE
+            l_orderkey = o_orderkey
+            AND l_commitdate < l_receiptdate
+    )
+GROUP BY
+    o_orderpriority
+ORDER BY
+    o_orderpriority",0.7567,0.7161968,Aggregate,False,198343.38,198403.35,5,24,561.875,587.41,5,1,1500000,5,5,15,15,69669,69669,75972,3793296,3793296
+44,"-- Query 2: Change the condition in the EXISTS subquery
+SELECT
+    o_orderpriority,
+    COUNT(*) AS order_count
+FROM
+    orders
+WHERE
+    o_orderdate >= DATE '1993-07-01'
+    AND o_orderdate < DATE '1993-07-01' + INTERVAL '3 month'
+    AND EXISTS (
+        SELECT
+            *
+        FROM
+            lineitem
+        WHERE
+            l_orderkey = o_orderkey
+            AND l_commitdate > l_receiptdate -- Changed condition
+    )
+GROUP BY
+    o_orderpriority
+ORDER BY
+    o_orderpriority",0.4383,0.4599415,Aggregate,False,198068.59,198113.73,5,24,421.812,432.076,5,1,1500000,5,5,15,15,43434,43434,57219,2158182,2158182
+45,"-- Query 3: Remove the EXISTS condition
+SELECT
+    o_orderpriority,
+    COUNT(*) AS order_count
+FROM
+    orders
+WHERE
+    o_orderdate >= DATE '1993-07-01'
+    AND o_orderdate < DATE '1993-07-01' + INTERVAL '3 month'
+GROUP BY
+    o_orderpriority
+ORDER BY
+    o_orderpriority",0.0489,0.0480811,Aggregate,False,36624.73,36625.99,5,24,51.623,53.759,5,1,1500000,5,5,15,15,15,57219
+46,"-- Query 4: Change the date interval in the WHERE clause
+SELECT
+    o_orderpriority,
+    COUNT(*) AS order_count
+FROM
+    orders
+WHERE
+    o_orderdate >= DATE '1993-07-01'
+    AND o_orderdate < DATE '1993-07-01' + INTERVAL '6 month' -- Changed interval
+    AND EXISTS (
+        SELECT
+            *
+        FROM
+            lineitem
+        WHERE
+            l_orderkey = o_orderkey
+            AND l_commitdate < l_receiptdate
+    )
+GROUP BY
+    o_orderpriority
+ORDER BY
+    o_orderpriority",0.5811999999999999,0.6720186,Aggregate,False,198909.97,198999.97,5,24,575.024,600.906,5,1,1500000,5,5,15,15,104895,104895,114288,3793296,3793296
+47,"-- Query 5: Change the grouping columns
+SELECT
+    o_clerk,
+    COUNT(*) AS order_count
+FROM
+    orders
+WHERE
+    o_orderdate >= DATE '1993-07-01'
+    AND o_orderdate < DATE '1993-07-01' + INTERVAL '3 month'
+    AND EXISTS (
+        SELECT
+            *
+        FROM
+            lineitem
+        WHERE
+            l_orderkey = o_orderkey
+            AND l_commitdate < l_receiptdate
+    )
+GROUP BY
+    o_clerk
+ORDER BY
+    o_clerk",0.5846,0.6289113,Aggregate,False,198068.59,198373.28,1000,24,583.576,609.989,1000,1,1500000,1000,1000,3000,3000,52524,52524,57219,3793296,3793296
+48,"-- Query 6: Add a new filter in the WHERE clause
+SELECT
+    o_orderpriority,
+    COUNT(*) AS order_count
+FROM
+    orders
+WHERE
+    o_orderdate >= DATE '1993-07-01'
+    AND o_orderdate < DATE '1993-07-01' + INTERVAL '3 month'
+    AND o_totalprice > 10000 -- New filter condition
+    AND EXISTS (
+        SELECT
+            *
+        FROM
+            lineitem
+        WHERE
+            l_orderkey = o_orderkey
+            AND l_commitdate < l_receiptdate
+    )
+GROUP BY
+    o_orderpriority
+ORDER BY
+    o_orderpriority",0.557,0.5897262,Aggregate,False,199614.22,199658.47,5,24,578.328,603.217,5,1,1500000,5,5,15,15,51795,51795,56124,3793296,3793296
+49,"-- Query 7: Change the ORDER BY clause
+SELECT
+    o_orderpriority,
+    COUNT(*) AS order_count
+FROM
+    orders
+WHERE
+    o_orderdate >= DATE '1993-07-01'
+    AND o_orderdate < DATE '1993-07-01' + INTERVAL '3 month'
+    AND EXISTS (
+        SELECT
+            *
+        FROM
+            lineitem
+        WHERE
+            l_orderkey = o_orderkey
+            AND l_commitdate < l_receiptdate
+    )
+GROUP BY
+    o_orderpriority
+ORDER BY
+    order_count DESC",0.5750000000000001,0.6138033,Sort,False,198113.79,198113.8,5,24,560.816,585.143,5,1,1500000,5,5,5,15,15,52524,52524,57219,3793296,3793296
+50,"-- Query 8: Remove the ORDER BY clause
+SELECT
+    o_orderpriority,
+    COUNT(*) AS order_count
+FROM
+    orders
+WHERE
+    o_orderdate >= DATE '1993-07-01'
+    AND o_orderdate < DATE '1993-07-01' + INTERVAL '3 month'
+    AND EXISTS (
+        SELECT
+            *
+        FROM
+            lineitem
+        WHERE
+            l_orderkey = o_orderkey
+            AND l_commitdate < l_receiptdate
+    )
+GROUP BY
+    o_orderpriority",0.5596,0.5971292,Aggregate,False,198068.59,198113.73,5,24,560.037,585.831,5,1,1500000,5,5,15,15,52524,52524,57219,3793296,3793296
+51,"-- Query 9: Change the COUNT(*) to SUM(o_totalprice)
+SELECT
+    o_orderpriority,
+    SUM(o_totalprice) AS total_price
+FROM
+    orders
+WHERE
+    o_orderdate >= DATE '1993-07-01'
+    AND o_orderdate < DATE '1993-07-01' + INTERVAL '3 month'
+    AND EXISTS (
+        SELECT
+            *
+        FROM
+            lineitem
+        WHERE
+            l_orderkey = o_orderkey
+            AND l_commitdate < l_receiptdate
+    )
+GROUP BY
+    o_orderpriority
+ORDER BY
+    o_orderpriority",0.562,0.6016477,Aggregate,False,198112.59,198157.78,5,48,566.734,593.01,5,1,1500000,5,5,15,15,52524,52524,57219,3793296,3793296
+52,"-- Query 10: Change the EXISTS subquery to a JOIN
+SELECT
+    o_orderpriority,
+    COUNT(*) AS order_count
+FROM
+    orders o
+JOIN
+    lineitem l ON o.o_orderkey = l.l_orderkey AND l.l_commitdate < l.l_receiptdate
+WHERE
+    o.o_orderdate >= DATE '1993-07-01'
+    AND o.o_orderdate < DATE '1993-07-01' + INTERVAL '3 month'
+GROUP BY
+    o_orderpriority
+ORDER BY
+    o_orderpriority",0.3875,0.43021,Aggregate,False,184057.15,184058.42,5,24,406.76,410.284,5,1,7501215,5,5,15,15,15,144870,3793296,57219,57219
+53,"-- Q7
+
+
+
+-- Query 1: Change the region name in the WHERE clause
+SELECT
+    n_name,
+    SUM(l_extendedprice * (1 - l_discount)) AS revenue
+FROM
+    customer,
+    orders,
+    lineitem,
+    supplier,
+    nation,
+    region
+WHERE
+    c_custkey = o_custkey
+    AND l_orderkey = o_orderkey
+    AND l_suppkey = s_suppkey
+    AND c_nationkey = s_nationkey
+    AND s_nationkey = n_nationkey
+    AND n_regionkey = r_regionkey
+    AND r_name = 'EUROPE' -- Changed region name
+    AND o_orderdate >= DATE '1994-01-01'
+    AND o_orderdate < DATE '1995-01-01'
+GROUP BY
+    n_name
+ORDER BY
+    revenue DESC",0.8148,0.6712059,Sort,False,185765.23,185765.66,170,136,660.945,683.899,5,1,7661245,5,5,5,15,15,7266,7266,181044,227598,1191756,1191756,6001215,5961,5961,30000,15,15,75,3,3,181043
+54,"-- Query 2: Change the date range in the WHERE clause
+SELECT
+    n_name,
+    SUM(l_extendedprice * (1 - l_discount)) AS revenue
+FROM
+    customer,
+    orders,
+    lineitem,
+    supplier,
+    nation,
+    region
+WHERE
+    c_custkey = o_custkey
+    AND l_orderkey = o_orderkey
+    AND l_suppkey = s_suppkey
+    AND c_nationkey = s_nationkey
+    AND s_nationkey = n_nationkey
+    AND n_regionkey = r_regionkey
+    AND r_name = 'ASIA'
+    AND o_orderdate >= DATE '1995-01-01' -- Changed start date
+    AND o_orderdate < DATE '1996-01-01' -- Changed end date
+GROUP BY
+    n_name
+ORDER BY
+    revenue DESC",0.5963999999999999,0.6478927,Sort,False,185782.13,185782.55,170,136,659.069,682.287,5,1,7661245,5,5,5,15,15,7377,7377,183231,228636,1201113,1201113,6001215,6009,6009,30000,15,15,75,3,3,183230
+55,"-- Query 3: Remove the ORDER BY clause
+SELECT
+    n_name,
+    SUM(l_extendedprice * (1 - l_discount)) AS revenue
+FROM
+    customer,
+    orders,
+    lineitem,
+    supplier,
+    nation,
+    region
+WHERE
+    c_custkey = o_custkey
+    AND l_orderkey = o_orderkey
+    AND l_suppkey = s_suppkey
+    AND c_nationkey = s_nationkey
+    AND s_nationkey = n_nationkey
+    AND n_regionkey = r_regionkey
+    AND r_name = 'ASIA'
+    AND o_orderdate >= DATE '1994-01-01'
+    AND o_orderdate < DATE '1995-01-01'
+GROUP BY
+    n_name",0.6147,0.6508702,Aggregate,False,185732.7,185758.93,170,136,662.855,687.106,5,1,7661245,5,5,15,15,7242,7242,182184,227598,1201113,1201113,6001215,6009,6009,30000,15,15,75,3,3,182183
+56,"-- Query 4: Change the aggregation function to AVG
+SELECT
+    n_name,
+    AVG(l_extendedprice * (1 - l_discount)) AS avg_revenue
+FROM
+    customer,
+    orders,
+    lineitem,
+    supplier,
+    nation,
+    region
+WHERE
+    c_custkey = o_custkey
+    AND l_orderkey = o_orderkey
+    AND l_suppkey = s_suppkey
+    AND c_nationkey = s_nationkey
+    AND s_nationkey = n_nationkey
+    AND n_regionkey = r_regionkey
+    AND r_name = 'ASIA'
+    AND o_orderdate >= DATE '1994-01-01'
+    AND o_orderdate < DATE '1995-01-01'
+GROUP BY
+    n_name
+ORDER BY
+    avg_revenue DESC",0.5992,0.6445061,Sort,False,185765.23,185765.66,170,136,656.152,679.672,5,1,7661245,5,5,5,15,15,7242,7242,182184,227598,1201113,1201113,6001215,6009,6009,30000,15,15,75,3,3,182183
+57,"-- Query 5: Change the GROUP BY column
+SELECT
+    r_name,
+    SUM(l_extendedprice * (1 - l_discount)) AS revenue
+FROM
+    customer,
+    orders,
+    lineitem,
+    supplier,
+    nation,
+    region
+WHERE
+    c_custkey = o_custkey
+    AND l_orderkey = o_orderkey
+    AND l_suppkey = s_suppkey
+    AND c_nationkey = s_nationkey
+    AND s_nationkey = n_nationkey
+    AND n_regionkey = r_regionkey
+    AND r_name IN ('ASIA', 'EUROPE') -- Changed GROUP BY column
+    AND o_orderdate >= DATE '1994-01-01'
+    AND o_orderdate < DATE '1995-01-01'
+GROUP BY
+    r_name
+ORDER BY
+    revenue DESC",0.6646000000000001,0.6966472,Sort,False,187235.85,187235.86,2,136,926.579,972.83,2,1,7661245,2,2,2,6,6,14508,14508,363225,227598,2392869,2392869,6001215,11970,11970,30000,30,30,75,6,6,363226
+58,"-- Query 6: Add a new filter in the WHERE clause
+SELECT
+    n_name,
+    SUM(l_extendedprice * (1 - l_discount)) AS revenue
+FROM
+    customer,
+    orders,
+    lineitem,
+    supplier,
+    nation,
+    region
+WHERE
+    c_custkey = o_custkey
+    AND l_orderkey = o_orderkey
+    AND l_suppkey = s_suppkey
+    AND c_nationkey = s_nationkey
+    AND s_nationkey = n_nationkey
+    AND n_regionkey = r_regionkey
+    AND r_name = 'ASIA'
+    AND o_orderdate >= DATE '1994-01-01'
+    AND o_orderdate < DATE '1995-01-01'
+    AND l_discount < 0.05 -- New filter condition
+GROUP BY
+    n_name
+ORDER BY
+    revenue DESC",0.5219,0.5706126,Sort,False,186096.97,186097.21,97,136,549.976,561.744,5,1,7661245,5,5,5,15,15,3270,3270,83295,227598,546204,546204,2727732,6009,6009,30000,15,15,75,3,3,83295
+59,"-- Query 7: Change the JOIN condition to use explicit JOIN syntax
+SELECT
+    n_name,
+    SUM(l_extendedprice * (1 - l_discount)) AS revenue
+FROM
+    customer
+JOIN
+    orders ON c_custkey = o_custkey
+JOIN
+    lineitem ON l_orderkey = o_orderkey
+JOIN
+    supplier ON l_suppkey = s_suppkey
+JOIN
+    nation ON c_nationkey = s_nationkey
+JOIN
+    region ON s_nationkey = n_nationkey AND n_regionkey = r_regionkey
+WHERE
+    r_name = 'ASIA'
+    AND o_orderdate >= DATE '1994-01-01'
+    AND o_orderdate < DATE '1995-01-01'
+GROUP BY
+    n_name
+ORDER BY
+    revenue DESC",0.6058,0.6404403000000001,Sort,False,185765.23,185765.66,170,136,658.451,681.798,5,1,7661245,5,5,5,15,15,7242,7242,182184,227598,1201113,1201113,6001215,6009,6009,30000,15,15,75,3,3,182183
+60,"-- Query 8: Change the SELECT columns
+SELECT
+    n_name,
+    SUM(l_extendedprice * (1 - l_discount)) AS total_revenue
+FROM
+    customer,
+    orders,
+    lineitem,
+    supplier,
+    nation,
+    region
+WHERE
+    c_custkey = o_custkey
+    AND l_orderkey = o_orderkey
+    AND l_suppkey = s_suppkey
+    AND c_nationkey = s_nationkey
+    AND s_nationkey = n_nationkey
+    AND n_regionkey = r_regionkey
+    AND r_name = 'ASIA'
+    AND o_orderdate >= DATE '1994-01-01'
+    AND o_orderdate < DATE '1995-01-01'
+GROUP BY
+    n_name
+ORDER BY
+    total_revenue DESC",0.603,0.6582336,Sort,False,185765.23,185765.66,170,136,651.981,674.583,5,1,7661245,5,5,5,15,15,7242,7242,182184,227598,1201113,1201113,6001215,6009,6009,30000,15,15,75,3,3,182183
+61,"-- Query 10: Add an additional JOIN with another table
+SELECT
+    n_name,
+    SUM(l_extendedprice * (1 - l_discount)) AS revenue,
+    c_mktsegment
+FROM
+    customer
+JOIN
+    orders ON c_custkey = o_custkey
+JOIN
+    lineitem ON l_orderkey = o_orderkey
+JOIN
+    supplier ON l_suppkey = s_suppkey
+JOIN
+    nation ON c_nationkey = s_nationkey
+JOIN
+    region ON s_nationkey = n_nationkey AND n_regionkey = r_regionkey
+WHERE
+    r_name = 'ASIA'
+    AND o_orderdate >= DATE '1994-01-01'
+    AND o_orderdate < DATE '1995-01-01'
+GROUP BY
+    n_name, c_mktsegment
+ORDER BY
+    revenue DESC",0.6025,0.6585952,Sort,False,185768.38,185768.91,213,147,655.893,678.965,25,1,7661245,25,25,25,75,75,7242,7242,182184,227598,1201113,1201113,6001215,6009,6009,30000,15,15,75,3,3,182183
+62,"-- Query 1: Change the market segment in the WHERE clause
+SELECT
+    l_orderkey,
+    SUM(l_extendedprice * (1 - l_discount)) AS revenue,
+    o_orderdate,
+    o_shippriority
+FROM
+    customer,
+    orders,
+    lineitem
+WHERE
+    c_mktsegment = 'HOUSEHOLD' -- Changed market segment
+    AND c_custkey = o_custkey
+    AND l_orderkey = o_orderkey
+    AND o_orderdate < DATE '1995-03-01'
+    AND l_shipdate > DATE '1995-03-01'
+GROUP BY
+    l_orderkey,
+    o_orderdate,
+    o_shippriority
+ORDER BY
+    revenue DESC,
+    o_orderdate",0.4168,0.4496955,Sort,False,282016.39,282785.86,307788,44,416.903,418.673,11470,1,7651215,11470,11470,11470,11479,11478,30459,30459,3277014,143418,143418,718524,30189,30189
+63,"-- Query 2: Change the date range in the WHERE clause
+SELECT
+    l_orderkey,
+    SUM(l_extendedprice * (1 - l_discount)) AS revenue,
+    o_orderdate,
+    o_shippriority
+FROM
+    customer,
+    orders,
+    lineitem
+WHERE
+    c_mktsegment = 'AUTOMOBILE'
+    AND c_custkey = o_custkey
+    AND l_orderkey = o_orderkey
+    AND o_orderdate >= DATE '1995-01-01' -- Changed start date
+    AND o_orderdate < DATE '1996-01-01' -- Changed end date
+    AND l_shipdate > DATE '1995-03-01'
+GROUP BY
+    l_orderkey,
+    o_orderdate,
+    o_shippriority
+ORDER BY
+    revenue DESC,
+    o_orderdate",0.4638,0.5227192,Sort,False,218365.79,218615.66,99947,44,450.237,452.997,44969,1,7651215,44969,44969,44969,45025,45024,174084,174084,3277014,45378,45378,228636,29751,29751
+64,"-- Query 3: Remove the ORDER BY clause
+SELECT
+    l_orderkey,
+    SUM(l_extendedprice * (1 - l_discount)) AS revenue,
+    o_orderdate,
+    o_shippriority
+FROM
+    customer,
+    orders,
+    lineitem
+WHERE
+    c_mktsegment = 'AUTOMOBILE'
+    AND c_custkey = o_custkey
+    AND l_orderkey = o_orderkey
+    AND o_orderdate < DATE '1995-03-01'
+    AND l_shipdate > DATE '1995-03-01'
+GROUP BY
+    l_orderkey,
+    o_orderdate,
+    o_shippriority",0.4084,0.4457158,Aggregate,False,204230.29,245367.49,312583,44,403.893,417.233,11415,1,7651215,11415,11415,11429,11430,30210,30210,3277014,142884,142884,718524,29751,29751
+65,"-- Query 4: Change the aggregation function to AVG
+SELECT
+    l_orderkey,
+    AVG(l_extendedprice * (1 - l_discount)) AS avg_revenue,
+    o_orderdate,
+    o_shippriority
+FROM
+    customer,
+    orders,
+    lineitem
+WHERE
+    c_mktsegment = 'AUTOMOBILE'
+    AND c_custkey = o_custkey
+    AND l_orderkey = o_orderkey
+    AND o_orderdate < DATE '1995-03-01'
+    AND l_shipdate > DATE '1995-03-01'
+GROUP BY
+    l_orderkey,
+    o_orderdate,
+    o_shippriority
+ORDER BY
+    avg_revenue DESC,
+    o_orderdate",0.4044,0.4412043,Sort,False,283514.75,284296.21,312583,44,418.81,420.539,11415,1,7651215,11415,11415,11415,11429,11430,30210,30210,3277014,142884,142884,718524,29751,29751
+66,"-- Query 5: Change the GROUP BY columns
+SELECT
+    l_orderkey,
+    SUM(l_extendedprice * (1 - l_discount)) AS revenue,
+    o_orderdate,
+    o_shippriority,
+    c_mktsegment
+FROM
+    customer,
+    orders,
+    lineitem
+WHERE
+    c_mktsegment = 'AUTOMOBILE'
+    AND c_custkey = o_custkey
+    AND l_orderkey = o_orderkey
+    AND o_orderdate < DATE '1995-03-01'
+    AND l_shipdate > DATE '1995-03-01'
+GROUP BY
+    l_orderkey,
+    o_orderdate,
+    o_shippriority,
+    c_mktsegment
+ORDER BY
+    revenue DESC,
+    o_orderdate",0.4266,0.4503645,Sort,False,285471.25,286252.71,312583,55,422.597,424.506,11415,1,7651215,11415,11415,11415,11429,11430,30210,30210,3277014,142884,142884,718524,29751,29751
+67,"-- Query 6: Add a new filter in the WHERE clause
+SELECT
+    l_orderkey,
+    SUM(l_extendedprice * (1 - l_discount)) AS revenue,
+    o_orderdate,
+    o_shippriority
+FROM
+    customer,
+    orders,
+    lineitem
+WHERE
+    c_mktsegment = 'AUTOMOBILE'
+    AND c_custkey = o_custkey
+    AND l_orderkey = o_orderkey
+    AND o_orderdate < DATE '1995-03-01'
+    AND l_shipdate > DATE '1995-03-01'
+    AND l_discount < 0.05 -- New filter condition
+GROUP BY
+    l_orderkey,
+    o_orderdate,
+    o_shippriority
+ORDER BY
+    revenue DESC,
+    o_orderdate",0.4437,0.4671518,Sort,False,233873.67,234231.03,142944,44,413.884,415.635,8108,1,7651215,8108,8108,8108,8113,8112,13701,13701,1489383,142884,142884,718524,29751,29751
+68,"-- Query 7: Change the JOIN condition to use explicit JOIN syntax
+SELECT
+    l_orderkey,
+    SUM(l_extendedprice * (1 - l_discount)) AS revenue,
+    o_orderdate,
+    o_shippriority
+FROM
+    customer
+JOIN
+    orders ON c_custkey = o_custkey
+JOIN
+    lineitem ON l_orderkey = o_orderkey
+WHERE
+    c_mktsegment = 'AUTOMOBILE'
+    AND o_orderdate < DATE '1995-03-01'
+    AND l_shipdate > DATE '1995-03-01'
+GROUP BY
+    l_orderkey,
+    o_orderdate,
+    o_shippriority
+ORDER BY
+    revenue DESC,
+    o_orderdate",0.545,0.5685002,Sort,False,283514.75,284296.21,312583,44,416.044,417.83,11415,1,7651215,11415,11415,11415,11429,11430,30210,30210,3277014,142884,142884,718524,29751,29751
+69,"-- Query 8: Change the SELECT columns
+SELECT
+    l_orderkey,
+    SUM(l_extendedprice * (1 - l_discount)) AS total_revenue,
+    o_orderdate,
+    o_shippriority
+FROM
+    customer,
+    orders,
+    lineitem
+WHERE
+    c_mktsegment = 'AUTOMOBILE'
+    AND c_custkey = o_custkey
+    AND l_orderkey = o_orderkey
+    AND o_orderdate < DATE '1995-03-01'
+    AND l_shipdate > DATE '1995-03-01'
+GROUP BY
+    l_orderkey,
+    o_orderdate,
+    o_shippriority
+ORDER BY
+    total_revenue DESC,
+    o_orderdate",0.4482,0.47030299999999997,Sort,False,283514.75,284296.21,312583,44,417.319,419.135,11415,1,7651215,11415,11415,11415,11429,11430,30210,30210,3277014,142884,142884,718524,29751,29751
+70,"-- Query 10: Add an additional JOIN with another table
+SELECT
+    l_orderkey,
+    SUM(l_extendedprice * (1 - l_discount)) AS revenue,
+    o_orderdate,
+    o_shippriority,
+    c_mktsegment
+FROM
+    customer
+JOIN
+    orders ON c_custkey = o_custkey
+JOIN
+    lineitem ON l_orderkey = o_orderkey
+JOIN
+    nation ON c_nationkey = n_nationkey
+WHERE
+    c_mktsegment = 'AUTOMOBILE'
+    AND o_orderdate < DATE '1995-03-01'
+    AND l_shipdate > DATE '1995-03-01'
+GROUP BY
+    l_orderkey,
+    o_orderdate,
+    o_shippriority,
+    c_mktsegment
+ORDER BY
+    revenue DESC,
+    o_orderdate",0.4319,0.4619802,Sort,False,285647.15,286428.61,312583,55,431.546,433.572,11415,1,7651240,11415,11415,11415,11429,11430,30210,30210,3277014,142884,142884,142884,718524,29751,29751,75,75
+71,"-- Query 1: Change the date range in the WHERE clause
+SELECT
+    SUM(l_extendedprice * l_discount) AS revenue
+FROM
+    lineitem
+WHERE
+    l_shipdate >= DATE '1994-07-01' -- Changed start date
+    AND l_shipdate < DATE '1994-07-01' + INTERVAL '1 year'
+    AND l_discount BETWEEN 0.06 - 0.01 AND 0.06 + 0.01
+    AND l_quantity < 24",0.28400000000000003,0.3160012,Aggregate,False,170101.78,170101.79,1,32,246.143,249.114,1,1,6001215,1,1,3,3,114693
+72,"-- Query 2: Change the discount range in the WHERE clause
+SELECT
+    SUM(l_extendedprice * l_discount) AS revenue
+FROM
+    lineitem
+WHERE
+    l_shipdate >= DATE '1993-07-01'
+    AND l_shipdate < DATE '1993-07-01' + INTERVAL '1 year'
+    AND l_discount BETWEEN 0.07 - 0.01 AND 0.07 + 0.01 -- Changed discount range
+    AND l_quantity < 24",0.2776,0.3125378,Aggregate,False,170103.58,170103.59,1,32,245.716,248.743,1,1,6001215,1,1,3,3,114060
+73,"-- Query 3: Remove the BETWEEN clause for discount
+SELECT
+    SUM(l_extendedprice * l_discount) AS revenue
+FROM
+    lineitem
+WHERE
+    l_shipdate >= DATE '1993-07-01'
+    AND l_shipdate < DATE '1993-07-01' + INTERVAL '1 year'
+    AND l_discount = 0.06 -- Removed BETWEEN clause
+    AND l_quantity < 24",0.2635,0.2994324,Aggregate,False,163691.96,163691.97,1,32,238.052,241.086,1,1,6001215,1,1,3,3,37779
+74,"-- Query 4: Change the aggregation function to AVG
+SELECT
+    AVG(l_extendedprice * l_discount) AS avg_revenue
+FROM
+    lineitem
+WHERE
+    l_shipdate >= DATE '1993-07-01'
+    AND l_shipdate < DATE '1993-07-01' + INTERVAL '1 year'
+    AND l_discount BETWEEN 0.06 - 0.01 AND 0.06 + 0.01
+    AND l_quantity < 24",0.2864,0.3073272,Aggregate,False,170101.43,170101.44,1,32,246.286,249.332,1,1,6001215,1,1,3,3,114090
+75,"-- Query 5: Change the GROUP BY clause
+SELECT
+    COUNT(*) AS count_items,
+    SUM(l_extendedprice * l_discount) AS revenue
+FROM
+    lineitem
+WHERE
+    l_shipdate >= DATE '1993-07-01'
+    AND l_shipdate < DATE '1993-07-01' + INTERVAL '1 year'
+    AND l_discount BETWEEN 0.06 - 0.01 AND 0.06 + 0.01
+    AND l_quantity < 24
+GROUP BY
+    l_discount",0.3376,0.3301889,Aggregate,False,170337.56,170340.48,11,44,253.575,256.721,3,1,6001215,3,3,9,9,9,114090
+76,"-- Changed GROUP BY clause
+
+-- Query 6: Add a new filter in the WHERE clause
+SELECT
+    SUM(l_extendedprice * l_discount) AS revenue
+FROM
+    lineitem
+WHERE
+    l_shipdate >= DATE '1993-07-01'
+    AND l_shipdate < DATE '1993-07-01' + INTERVAL '1 year'
+    AND l_discount BETWEEN 0.06 - 0.01 AND 0.06 + 0.01
+    AND l_quantity < 24
+    AND l_extendedprice > 1000",0.2808,0.3060613,Aggregate,False,176352.81,176352.82,1,32,253.922,256.918,1,1,6001215,1,1,3,3,113973
+77,"-- New filter condition
+
+-- Query 7: Change the JOIN condition to use explicit JOIN syntax
+SELECT
+    SUM(l_extendedprice * l_discount) AS revenue
+FROM
+    lineitem
+JOIN
+    orders ON lineitem.l_orderkey = orders.o_orderkey
+WHERE
+    l_shipdate >= DATE '1993-07-01'
+    AND l_shipdate < DATE '1993-07-01' + INTERVAL '1 year'
+    AND l_discount BETWEEN 0.06 - 0.01 AND 0.06 + 0.01
+    AND l_quantity < 24",0.3619,0.38880950000000003,Aggregate,False,209524.11,209524.12,1,32,341.026,344.686,1,1,7501215,1,1,3,3,114090,1500000,114090,114090
+78,"-- Query 8: Change the SELECT columns
+SELECT
+    l_orderkey,
+    SUM(l_extendedprice * l_discount) AS revenue
+FROM
+    lineitem
+WHERE
+    l_shipdate >= DATE '1993-07-01'
+    AND l_shipdate < DATE '1993-07-01' + INTERVAL '1 year'
+    AND l_discount BETWEEN 0.06 - 0.01 AND 0.06 + 0.01
+    AND l_quantity < 24
+GROUP BY
+    l_orderkey
+ORDER BY
+    revenue DESC",0.4476,0.5197058999999999,Sort,False,198354.46,198601.9,98975,36,333.472,340.755,91880,1,6001215,91880,91880,91880,91899,91899,114090,114090
+79,"-- Query 1: Change the date range in the WHERE clause
+SELECT
+    c_custkey,
+    c_name,
+    SUM(l_extendedprice * (1 - l_discount)) AS revenue,
+    c_acctbal,
+    n_name,
+    c_address,
+    c_phone,
+    c_comment
+FROM
+    customer,
+    orders,
+    lineitem,
+    nation
+WHERE
+    c_custkey = o_custkey
+    AND l_orderkey = o_orderkey
+    AND o_orderdate >= DATE '1995-01-01' -- Changed start date
+    AND o_orderdate < DATE '1995-01-01' + INTERVAL '3 month'
+    AND l_returnflag = 'R'
+    AND c_nationkey = n_nationkey
+GROUP BY
+    c_custkey,
+    c_name,
+    c_acctbal,
+    c_phone,
+    n_name,
+    c_address,
+    c_comment
+ORDER BY
+    revenue DESC
+LIMIT 20",0.4358,0.5051709,Limit,False,201715.98,201716.03,20,280,438.765,443.329,20,1,7651240,20,20,20,35593,41600,41601,94908,94908,1478871,56505,56505,56505,150000,56505,56505,75,75
+80,"-- Query 2: Remove the ORDER BY clause
+SELECT
+    c_custkey,
+    c_name,
+    SUM(l_extendedprice * (1 - l_discount)) AS revenue,
+    c_acctbal,
+    n_name,
+    c_address,
+    c_phone,
+    c_comment
+FROM
+    customer,
+    orders,
+    lineitem,
+    nation
+WHERE
+    c_custkey = o_custkey
+    AND l_orderkey = o_orderkey
+    AND o_orderdate >= DATE '1994-01-01'
+    AND o_orderdate < DATE '1994-01-01' + INTERVAL '3 month'
+    AND l_returnflag = 'R'
+    AND c_nationkey = n_nationkey
+GROUP BY
+    c_custkey,
+    c_name,
+    c_acctbal,
+    c_phone,
+    n_name,
+    c_address,
+    c_comment",0.4968,0.4998873,Aggregate,False,190024.71,201407.38,53831,280,371.082,491.577,37607,1,7651240,37607,37607,112798,112798,112798,112797,112797,1478871,56349,56349,150000,56349,56349,112798,25
+81,"-- Query 3: Change the aggregation function to AVG
+SELECT
+    c_custkey,
+    c_name,
+    AVG(l_extendedprice * (1 - l_discount)) AS avg_revenue,
+    c_acctbal,
+    n_name,
+    c_address,
+    c_phone,
+    c_comment
+FROM
+    customer,
+    orders,
+    lineitem,
+    nation
+WHERE
+    c_custkey = o_custkey
+    AND l_orderkey = o_orderkey
+    AND o_orderdate >= DATE '1994-01-01'
+    AND o_orderdate < DATE '1994-01-01' + INTERVAL '3 month'
+    AND l_returnflag = 'R'
+    AND c_nationkey = n_nationkey
+GROUP BY
+    c_custkey,
+    c_name,
+    c_acctbal,
+    c_phone,
+    n_name,
+    c_address,
+    c_comment
+ORDER BY
+    avg_revenue DESC
+LIMIT 20",0.486,0.5341303,Limit,False,202839.81,202839.86,20,280,509.816,514.319,20,1,7651240,20,20,20,37607,112798,112798,112798,112797,112797,1478871,56349,56349,150000,56349,56349,112798,25
+82,"-- Query 4: Change the GROUP BY columns
+SELECT
+    c_custkey,
+    c_name,
+    SUM(l_extendedprice * (1 - l_discount)) AS revenue,
+    c_acctbal,
+    n_name
+FROM
+    customer,
+    orders,
+    lineitem,
+    nation
+WHERE
+    c_custkey = o_custkey
+    AND l_orderkey = o_orderkey
+    AND o_orderdate >= DATE '1994-01-01'
+    AND o_orderdate < DATE '1994-01-01' + INTERVAL '3 month'
+    AND l_returnflag = 'R'
+    AND c_nationkey = n_nationkey
+GROUP BY
+    c_custkey,
+    c_name,
+    c_acctbal,
+    n_name
+ORDER BY
+    revenue DESC
+LIMIT 20",0.4628,0.50069,Limit,False,198212.6,198212.65,20,165,433.988,437.711,20,1,7651240,20,20,20,37607,44306,44307,112797,112797,1478871,56349,56349,56349,56349,150000,150000,75,75
+83,"-- Query 5: Add a new filter in the WHERE clause
+SELECT
+    c_custkey,
+    c_name,
+    SUM(l_extendedprice * (1 - l_discount)) AS revenue,
+    c_acctbal,
+    n_name,
+    c_address,
+    c_phone,
+    c_comment
+FROM
+    customer,
+    orders,
+    lineitem,
+    nation
+WHERE
+    c_custkey = o_custkey
+    AND l_orderkey = o_orderkey
+    AND o_orderdate >= DATE '1994-01-01'
+    AND o_orderdate < DATE '1994-01-01' + INTERVAL '3 month'
+    AND l_returnflag = 'R'
+    AND c_nationkey = n_nationkey
+    AND c_acctbal > 5000 -- New filter condition
+GROUP BY
+    c_custkey,
+    c_name,
+    c_acctbal,
+    c_phone,
+    n_name,
+    c_address,
+    c_comment
+ORDER BY
+    revenue DESC
+LIMIT 20",0.4485,0.48331670000000004,Limit,False,192209.29,192209.34,20,280,391.842,395.313,20,1,7651240,20,20,20,16994,20113,20112,51099,51099,1478871,25383,25383,25383,56349,67989,67989,75,75
+84,"-- Query 6: Change the JOIN condition to use explicit JOIN syntax
+SELECT
+    c_custkey,
+    c_name,
+    SUM(l_extendedprice * (1 - l_discount)) AS revenue,
+    c_acctbal,
+    n_name,
+    c_address,
+    c_phone,
+    c_comment
+FROM
+    customer
+JOIN
+    orders ON c_custkey = o_custkey
+JOIN
+    lineitem ON l_orderkey = o_orderkey
+JOIN
+    nation ON c_nationkey = n_nationkey
+WHERE
+    o_orderdate >= DATE '1994-01-01'
+    AND o_orderdate < DATE '1994-01-01' + INTERVAL '3 month'
+    AND l_returnflag = 'R'
+GROUP BY
+    c_custkey,
+    c_name,
+    c_acctbal,
+    c_phone,
+    n_name,
+    c_address,
+    c_comment
+ORDER BY
+    revenue DESC
+LIMIT 20",0.4702,0.5059312,Limit,False,202839.81,202839.86,20,280,505.356,509.817,20,1,7651240,20,20,20,37607,112798,112798,112798,112797,112797,1478871,56349,56349,150000,56349,56349,112798,25
+85,"-- Query 7: Change the SELECT columns
+SELECT
+    c_custkey,
+    c_name,
+    SUM(l_extendedprice * (1 - l_discount)) AS total_revenue,
+    n_name
+FROM
+    customer,
+    orders,
+    lineitem,
+    nation
+WHERE
+    c_custkey = o_custkey
+    AND l_orderkey = o_orderkey
+    AND o_orderdate >= DATE '1994-01-01'
+    AND o_orderdate < DATE '1994-01-01' + INTERVAL '3 month'
+    AND l_returnflag = 'R'
+    AND c_nationkey = n_nationkey
+GROUP BY
+    c_custkey,
+    c_name,
+    n_name
+ORDER BY
+    total_revenue DESC
+LIMIT 20",0.4417,0.4962056,Limit,False,198212.6,198212.65,20,159,428.887,432.48,20,1,7651240,20,20,20,37607,44383,44382,112797,112797,1478871,56349,56349,56349,56349,150000,150000,75,75
+86,"-- Query 9: Add an additional JOIN with another table
+SELECT
+    c_custkey,
+    c_name,
+    SUM(l_extendedprice * (1 - l_discount)) AS revenue,
+    c_acctbal,
+    n_name,
+    c_address,
+    c_phone,
+    c_comment
+FROM
+    customer
+JOIN
+    orders ON c_custkey = o_custkey
+JOIN
+    lineitem ON l_orderkey = o_orderkey
+JOIN
+    nation ON c_nationkey = n_nationkey
+JOIN
+    region ON n_regionkey = r_regionkey
+WHERE
+    o_orderdate >= DATE '1994-01-01'
+    AND o_orderdate < DATE '1994-01-01' + INTERVAL '3 month'
+    AND l_returnflag = 'R'
+    AND r_name = 'ASIA' -- Added new join and filter
+GROUP BY
+    c_custkey,
+    c_name,
+    c_acctbal,
+    c_phone,
+    n_name,
+    c_address,
+    c_comment
+ORDER BY
+    revenue DESC
+LIMIT 20",0.4076,0.4541412,Limit,False,187365.12,187365.17,20,280,372.999,376.885,20,1,7651245,20,20,20,7595,9057,9057,22875,22875,1478871,11481,11481,56349,30183,30183,150000,15,15,75,3,3
+87,"-- Query 10: Change the LIMIT clause to retrieve more rows
+SELECT
+    c_custkey,
+    c_name,
+    SUM(l_extendedprice * (1 - l_discount)) AS revenue,
+    c_acctbal,
+    n_name,
+    c_address,
+    c_phone,
+    c_comment
+FROM
+    customer,
+    orders,
+    lineitem,
+    nation
+WHERE
+    c_custkey = o_custkey
+    AND l_orderkey = o_orderkey
+    AND o_orderdate >= DATE '1994-01-01'
+    AND o_orderdate < DATE '1994-01-01' + INTERVAL '3 month'
+    AND l_returnflag = 'R'
+    AND c_nationkey = n_nationkey
+GROUP BY
+    c_custkey,
+    c_name,
+    c_acctbal,
+    c_phone,
+    n_name,
+    c_address,
+    c_comment
+ORDER BY
+    revenue DESC
+LIMIT 30",0.4593,0.5098494,Limit,False,202997.25,202997.33,30,280,506.373,510.991,30,1,7651240,30,30,30,37607,112798,112798,112798,112797,112797,1478871,56349,56349,150000,56349,56349,112798,25
+88,"-- Increased LIMIT to 30 rows
+
+-- Query 1: Change the nation in the WHERE clause
+SELECT
+    ps_partkey,
+    SUM(ps_supplycost * ps_availqty) AS value
+FROM
+    partsupp,
+    supplier,
+    nation
+WHERE
+    ps_suppkey = s_suppkey
+    AND s_nationkey = n_nationkey
+    AND n_name = 'FRANCE' -- Changed nation to France
+GROUP BY
+    ps_partkey
+HAVING
+    SUM(ps_supplycost * ps_availqty) > (
+        SELECT
+            SUM(ps_supplycost * ps_availqty) * 0.0001
+        FROM
+            partsupp,
+            supplier,
+            nation
+        WHERE
+            ps_suppkey = s_suppkey
+            AND s_nationkey = n_nationkey
+            AND n_name = 'FRANCE'
+    )
+ORDER BY
+    value DESC",0.0885,0.0895728,Sort,False,47855.64,47859.55,1563,36,119.136,119.747,911,1,810025,911,911,1,3,3,32160,800001,1206,1206,30000,3,3,911,30254,30255,32160,32160,800001,1206,1206,30000,3,3
+89,"-- Query 2: Change the HAVING condition multiplier
+SELECT
+    ps_partkey,
+    SUM(ps_supplycost * ps_availqty) AS value
+FROM
+    partsupp,
+    supplier,
+    nation
+WHERE
+    ps_suppkey = s_suppkey
+    AND s_nationkey = n_nationkey
+    AND n_name = 'GERMANY'
+GROUP BY
+    ps_partkey
+HAVING
+    SUM(ps_supplycost * ps_availqty) > (
+        SELECT
+            SUM(ps_supplycost * ps_availqty) * 0.001 -- Changed multiplier
+        FROM
+            partsupp,
+            supplier,
+            nation
+        WHERE
+            ps_suppkey = s_suppkey
+            AND s_nationkey = n_nationkey
+            AND n_name = 'GERMANY'
+    )
+ORDER BY
+    value DESC",0.0814,0.0892032,Sort,False,47855.64,47859.55,1563,36,117.283,117.919,0,1,810025,0,0,1,3,3,31680,800001,1188,1188,30000,3,3,0,29828,29829,31680,31680,800001,1188,1188,30000,3,3
+90,"-- Query 3: Add an additional filter in the WHERE clause
+SELECT
+    ps_partkey,
+    SUM(ps_supplycost * ps_availqty) AS value
+FROM
+    partsupp,
+    supplier,
+    nation
+WHERE
+    ps_suppkey = s_suppkey
+    AND s_nationkey = n_nationkey
+    AND n_name = 'GERMANY'
+    AND ps_availqty > 1000 -- Added filter condition
+GROUP BY
+    ps_partkey
+HAVING
+    SUM(ps_supplycost * ps_availqty) > (
+        SELECT
+            SUM(ps_supplycost * ps_availqty) * 0.0001
+        FROM
+            partsupp,
+            supplier,
+            nation
+        WHERE
+            ps_suppkey = s_suppkey
+            AND s_nationkey = n_nationkey
+            AND n_name = 'GERMANY'
+    )
+ORDER BY
+    value DESC",0.0842,0.091909,Sort,False,48483.48,48487.0,1409,36,117.32,117.985,1047,1,810025,1047,1047,1,3,3,31680,800001,1188,1188,30000,3,3,1047,27085,27084,28560,28560,720306,1188,1188,30000,3,3
+91,"-- Query 4: Change the SELECT columns
+SELECT
+    ps_partkey,
+    AVG(ps_supplycost * ps_availqty) AS avg_value -- Changed to AVG instead of SUM
+FROM
+    partsupp,
+    supplier,
+    nation
+WHERE
+    ps_suppkey = s_suppkey
+    AND s_nationkey = n_nationkey
+    AND n_name = 'GERMANY'
+GROUP BY
+    ps_partkey
+HAVING
+    AVG(ps_supplycost * ps_availqty) > (
+        SELECT
+            SUM(ps_supplycost * ps_availqty) * 0.0001
+        FROM
+            partsupp,
+            supplier,
+            nation
+        WHERE
+            ps_suppkey = s_suppkey
+            AND s_nationkey = n_nationkey
+            AND n_name = 'GERMANY'
+    )
+ORDER BY
+    avg_value DESC",0.0814,0.0922999,Sort,False,47855.64,47859.55,1563,36,121.256,121.825,700,1,810025,700,700,1,3,3,31680,800001,1188,1188,30000,3,3,700,29828,29829,31680,31680,800001,1188,1188,30000,3,3
+92,"-- Query 5: Change the aggregation function in the HAVING clause
+SELECT
+    ps_partkey,
+    SUM(ps_supplycost * ps_availqty) AS value
+FROM
+    partsupp,
+    supplier,
+    nation
+WHERE
+    ps_suppkey = s_suppkey
+    AND s_nationkey = n_nationkey
+    AND n_name = 'GERMANY'
+GROUP BY
+    ps_partkey
+HAVING
+    AVG(ps_supplycost * ps_availqty) > (
+        SELECT
+            SUM(ps_supplycost * ps_availqty) * 0.0001
+        FROM
+            partsupp,
+            supplier,
+            nation
+        WHERE
+            ps_suppkey = s_suppkey
+            AND s_nationkey = n_nationkey
+            AND n_name = 'GERMANY'
+    )
+ORDER BY
+    value DESC",0.0837,0.1013826,Sort,False,47867.37,47871.27,1563,36,126.65,127.542,700,1,810025,700,700,1,3,3,31680,800001,1188,1188,30000,3,3,700,29828,29829,31680,31680,800001,1188,1188,30000,3,3
+93,"-- Query 6: Change the ORDER BY clause
+SELECT
+    ps_partkey,
+    SUM(ps_supplycost * ps_availqty) AS value
+FROM
+    partsupp,
+    supplier,
+    nation
+WHERE
+    ps_suppkey = s_suppkey
+    AND s_nationkey = n_nationkey
+    AND n_name = 'GERMANY'
+GROUP BY
+    ps_partkey
+HAVING
+    SUM(ps_supplycost * ps_availqty) > (
+        SELECT
+            SUM(ps_supplycost * ps_availqty) * 0.0001
+        FROM
+            partsupp,
+            supplier,
+            nation
+        WHERE
+            ps_suppkey = s_suppkey
+            AND s_nationkey = n_nationkey
+            AND n_name = 'GERMANY'
+    )
+ORDER BY
+    ps_partkey ASC",0.0813,0.0883688,Aggregate,False,47173.15,47772.73,1563,36,95.159,119.467,1048,1,810025,1048,1048,1,3,3,31680,800001,1188,1188,30000,3,3,29828,29829,31680,31680,800001,1188,1188,30000,3,3
+94,"-- Changed ORDER BY to ascending ps_partkey
+
+-- Query 7: Remove the HAVING clause and change WHERE conditions
+SELECT
+    ps_partkey,
+    SUM(ps_supplycost * ps_availqty) AS value
+FROM
+    partsupp,
+    supplier,
+    nation
+WHERE
+    ps_suppkey = s_suppkey
+    AND s_nationkey = n_nationkey
+    AND n_name = 'GERMANY'
+    AND ps_availqty > 500 -- Changed filter condition
+GROUP BY
+    ps_partkey
+ORDER BY
+    value DESC",0.0612,0.06791319999999999,Sort,False,25225.89,25237.03,4457,36,77.127,78.612,28439,1,810025,28439,28439,28439,28449,28449,30108,30108,760080,1188,1188,30000,3,3
+95,"-- Query 8: Add a new JOIN and change grouping
+SELECT
+    ps_partkey,
+    SUM(ps_supplycost * ps_availqty) AS value
+FROM
+    partsupp
+JOIN
+    supplier ON ps_suppkey = s_suppkey
+JOIN
+    nation ON s_nationkey = n_nationkey
+JOIN
+    region ON n_regionkey = r_regionkey
+WHERE
+    r_name = 'EUROPE' -- Added new join and filter
+GROUP BY
+    ps_partkey
+HAVING
+    SUM(ps_supplycost * ps_availqty) > (
+        SELECT
+            SUM(ps_supplycost * ps_availqty) * 0.0001
+        FROM
+            partsupp
+            JOIN supplier ON ps_suppkey = s_suppkey
+            JOIN nation ON s_nationkey = n_nationkey
+            JOIN region ON n_regionkey = r_regionkey
+        WHERE
+            r_name = 'EUROPE'
+    )
+ORDER BY
+    value DESC",0.13720000000000002,0.1791467,Sort,False,47902.35,47906.26,1563,36,212.076,213.072,0,1,810030,0,0,1,3,3,158961,800001,5961,5961,30000,15,15,75,3,3,0,117599,117600,158961,158961,800001,5961,5961,30000,15,15,75,3,3
+96,"-- Query 9: Change the main table in the FROM clause
+SELECT
+    ps_partkey,
+    SUM(ps_supplycost * ps_availqty) AS value
+FROM
+    partsupp,
+    supplier,
+    nation,
+    region
+WHERE
+    ps_suppkey = s_suppkey
+    AND s_nationkey = n_nationkey
+    AND n_name = 'GERMANY'
+    AND n_regionkey = r_regionkey -- Added region filter directly in WHERE clause
+GROUP BY
+    ps_partkey
+HAVING
+    SUM(ps_supplycost * ps_availqty) > (
+        SELECT
+            SUM(ps_supplycost * ps_availqty) * 0.0001
+        FROM
+            partsupp,
+            supplier,
+            nation,
+            region
+        WHERE
+            ps_suppkey = s_suppkey
+            AND s_nationkey = n_nationkey
+            AND n_name = 'GERMANY'
+            AND n_regionkey = r_regionkey
+    )
+ORDER BY
+    value DESC",0.0803,0.0871847,Sort,False,47890.96,47894.86,1563,36,118.576,118.92,1048,1,810030,1048,1048,1,3,3,31680,800001,1188,1188,1188,30000,3,3,1188,3,1048,29828,29829,31680,31680,800001,1188,1188,1188,30000,3,3,1188,3
+97,"-- Query 10: Change the SELECT and ORDER BY columns
+SELECT
+    ps_suppkey,
+    SUM(ps_supplycost * ps_availqty) AS value
+FROM
+    partsupp,
+    supplier,
+    nation
+WHERE
+    ps_suppkey = s_suppkey
+    AND s_nationkey = n_nationkey
+    AND n_name = 'GERMANY'
+GROUP BY
+    ps_suppkey
+HAVING
+    SUM(ps_supplycost * ps_availqty) > (
+        SELECT
+            SUM(ps_supplycost * ps_availqty) * 0.0001
+        FROM
+            partsupp,
+            supplier,
+            nation
+        WHERE
+            ps_suppkey = s_suppkey
+            AND s_nationkey = n_nationkey
+            AND n_name = 'GERMANY'
+    )
+ORDER BY
+    value DESC",0.07479999999999999,0.0703098,Sort,False,47855.64,47859.55,1563,36,100.323,100.404,396,1,810025,396,396,1,3,3,31680,800001,1188,1188,30000,3,3,396,1188,1188,31680,31680,800001,1188,1188,30000,3,3
+98,"-- Query 1: Change ship modes in the IN clause
+SELECT
+    l_shipmode,
+    SUM(
+        CASE
+            WHEN o_orderpriority = '1-URGENT' OR o_orderpriority = '2-HIGH' THEN 1
+            ELSE 0
+        END
+    ) AS high_line_count,
+    SUM(
+        CASE
+            WHEN o_orderpriority <> '1-URGENT' AND o_orderpriority <> '2-HIGH' THEN 1
+            ELSE 0
+        END
+    ) AS low_line_count
+FROM
+    orders,
+    lineitem
+WHERE
+    o_orderkey = l_orderkey
+    AND l_shipmode IN ('AIR', 'RAIL') -- Changed ship modes
+    AND l_commitdate < l_receiptdate
+    AND l_shipdate < l_commitdate
+    AND l_receiptdate >= DATE '1994-01-01'
+    AND l_receiptdate < DATE '1994-01-01' + INTERVAL '1 year'
+GROUP BY
+    l_shipmode
+ORDER BY
+    l_shipmode",0.4449,0.4728525,Aggregate,False,209542.88,209790.99,7,27,422.03,424.803,2,1,7501215,2,2,6,6,31050,31050,1500000,31050,31050
+99,"-- Query 2: Adjust date range for l_receiptdate
+SELECT
+    l_shipmode,
+    SUM(
+        CASE
+            WHEN o_orderpriority = '1-URGENT' OR o_orderpriority = '2-HIGH' THEN 1
+            ELSE 0
+        END
+    ) AS high_line_count,
+    SUM(
+        CASE
+            WHEN o_orderpriority <> '1-URGENT' AND o_orderpriority <> '2-HIGH' THEN 1
+            ELSE 0
+        END
+    ) AS low_line_count
+FROM
+    orders,
+    lineitem
+WHERE
+    o_orderkey = l_orderkey
+    AND l_shipmode IN ('MAIL', 'SHIP')
+    AND l_commitdate < l_receiptdate
+    AND l_shipdate < l_commitdate
+    AND l_receiptdate >= DATE '1993-01-01' -- Adjusted start date
+    AND l_receiptdate < DATE '1993-01-01' + INTERVAL '1 year' -- Adjusted end date
+GROUP BY
+    l_shipmode
+ORDER BY
+    l_shipmode",0.447,0.4927966,Aggregate,False,209539.39,209786.73,7,27,421.272,424.243,2,1,7501215,2,2,6,6,31170,31170,1500000,31170,31170
+100,"-- Query 3: Change order priority conditions in the CASE statements
+SELECT
+    l_shipmode,
+    SUM(
+        CASE
+            WHEN o_orderpriority = '1-URGENT' OR o_orderpriority = '3-MEDIUM' THEN 1 -- Changed priority condition
+            ELSE 0
+        END
+    ) AS high_line_count,
+    SUM(
+        CASE
+            WHEN o_orderpriority <> '1-URGENT' AND o_orderpriority <> '3-MEDIUM' THEN 1 -- Changed priority condition
+            ELSE 0
+        END
+    ) AS low_line_count
+FROM
+    orders,
+    lineitem
+WHERE
+    o_orderkey = l_orderkey
+    AND l_shipmode IN ('MAIL', 'SHIP')
+    AND l_commitdate < l_receiptdate
+    AND l_shipdate < l_commitdate
+    AND l_receiptdate >= DATE '1994-01-01'
+    AND l_receiptdate < DATE '1994-01-01' + INTERVAL '1 year'
+GROUP BY
+    l_shipmode
+ORDER BY
+    l_shipmode",0.4311,0.4703861,Aggregate,False,209538.48,209785.62,7,27,422.103,425.205,2,1,7501215,2,2,6,6,30987,30987,1500000,30987,30987
+101,"-- Query 4: Remove the l_commitdate < l_receiptdate condition
+SELECT
+    l_shipmode,
+    SUM(
+        CASE
+            WHEN o_orderpriority = '1-URGENT' OR o_orderpriority = '2-HIGH' THEN 1
+            ELSE 0
+        END
+    ) AS high_line_count,
+    SUM(
+        CASE
+            WHEN o_orderpriority <> '1-URGENT' AND o_orderpriority <> '2-HIGH' THEN 1
+            ELSE 0
+        END
+    ) AS low_line_count
+FROM
+    orders,
+    lineitem
+WHERE
+    o_orderkey = l_orderkey
+    AND l_shipmode IN ('MAIL', 'SHIP')
+    AND l_shipdate < l_commitdate -- Removed condition
+    AND l_receiptdate >= DATE '1994-01-01'
+    AND l_receiptdate < DATE '1994-01-01' + INTERVAL '1 year'
+GROUP BY
+    l_shipmode
+ORDER BY
+    l_shipmode",0.4529,0.4887704,Aggregate,False,203506.73,203508.54,7,27,450.247,454.437,2,1,7501215,2,2,6,6,6,126075,1500000,126075,126075
+102,"-- Query 5: Change the grouping to include o_orderpriority
+SELECT
+    l_shipmode,
+    o_orderpriority, -- Added o_orderpriority to grouping
+    SUM(
+        CASE
+            WHEN o_orderpriority = '1-URGENT' OR o_orderpriority = '2-HIGH' THEN 1
+            ELSE 0
+        END
+    ) AS high_line_count,
+    SUM(
+        CASE
+            WHEN o_orderpriority <> '1-URGENT' AND o_orderpriority <> '2-HIGH' THEN 1
+            ELSE 0
+        END
+    ) AS low_line_count
+FROM
+    orders,
+    lineitem
+WHERE
+    o_orderkey = l_orderkey
+    AND l_shipmode IN ('MAIL', 'SHIP')
+    AND l_commitdate < l_receiptdate
+    AND l_shipdate < l_commitdate
+    AND l_receiptdate >= DATE '1994-01-01'
+    AND l_receiptdate < DATE '1994-01-01' + INTERVAL '1 year'
+GROUP BY
+    l_shipmode, o_orderpriority -- Adjusted grouping
+ORDER BY
+    l_shipmode",0.4211,0.4652872,Aggregate,False,209538.48,209823.9,35,43,423.219,426.883,10,1,7501215,10,10,30,30,30987,30987,1500000,30987,30987
+103,"-- Query 6: Change the ORDER BY to descending order of high_line_count
+SELECT
+    l_shipmode,
+    SUM(
+        CASE
+            WHEN o_orderpriority = '1-URGENT' OR o_orderpriority = '2-HIGH' THEN 1
+            ELSE 0
+        END
+    ) AS high_line_count,
+    SUM(
+        CASE
+            WHEN o_orderpriority <> '1-URGENT' AND o_orderpriority <> '2-HIGH' THEN 1
+            ELSE 0
+        END
+    ) AS low_line_count
+FROM
+    orders,
+    lineitem
+WHERE
+    o_orderkey = l_orderkey
+    AND l_shipmode IN ('MAIL', 'SHIP')
+    AND l_commitdate < l_receiptdate
+    AND l_shipdate < l_commitdate
+    AND l_receiptdate >= DATE '1994-01-01'
+    AND l_receiptdate < DATE '1994-01-01' + INTERVAL '1 year'
+GROUP BY
+    l_shipmode
+ORDER BY
+    high_line_count DESC",0.431,0.4673404,Sort,False,209785.72,209785.73,7,27,422.529,425.595,2,1,7501215,2,2,2,6,6,30987,30987,1500000,30987,30987
+104,"-- Changed ORDER BY to high_line_count descending
+
+-- Query 7: Add a new condition to the WHERE clause
+SELECT
+    l_shipmode,
+    SUM(
+        CASE
+            WHEN o_orderpriority = '1-URGENT' OR o_orderpriority = '2-HIGH' THEN 1
+            ELSE 0
+        END
+    ) AS high_line_count,
+    SUM(
+        CASE
+            WHEN o_orderpriority <> '1-URGENT' AND o_orderpriority <> '2-HIGH' THEN 1
+            ELSE 0
+        END
+    ) AS low_line_count
+FROM
+    orders,
+    lineitem
+WHERE
+    o_orderkey = l_orderkey
+    AND l_shipmode IN ('MAIL', 'SHIP')
+    AND l_commitdate < l_receiptdate
+    AND l_shipdate < l_commitdate
+    AND l_receiptdate >= DATE '1994-01-01'
+    AND l_receiptdate < DATE '1994-01-01' + INTERVAL '1 year'
+    AND o_orderpriority = '1-URGENT' -- Added new condition
+GROUP BY
+    l_shipmode
+ORDER BY
+    l_shipmode",0.42419999999999997,0.4644884,Aggregate,False,205387.5,205439.19,7,27,407.48,411.25,2,1,7501215,2,2,6,6,6282,6282,300342,30987,30987
+105,"-- Query 8: Change the COUNT in CASE statements to SUM
+SELECT
+    l_shipmode,
+    SUM(
+        CASE
+            WHEN o_orderpriority = '1-URGENT' OR o_orderpriority = '2-HIGH' THEN l_quantity
+            ELSE 0
+        END
+    ) AS high_line_count,
+    SUM(
+        CASE
+            WHEN o_orderpriority <> '1-URGENT' AND o_orderpriority <> '2-HIGH' THEN l_quantity
+            ELSE 0
+        END
+    ) AS low_line_count
+FROM
+    orders,
+    lineitem
+WHERE
+    o_orderkey = l_orderkey
+    AND l_shipmode IN ('MAIL', 'SHIP')
+    AND l_commitdate < l_receiptdate
+    AND l_shipdate < l_commitdate
+    AND l_receiptdate >= DATE '1994-01-01'
+    AND l_receiptdate < DATE '1994-01-01' + INTERVAL '1 year'
+GROUP BY
+    l_shipmode
+ORDER BY
+    l_shipmode",0.4318,0.4672811,Aggregate,False,209538.48,209785.76,7,75,424.604,427.485,2,1,7501215,2,2,6,6,30987,30987,1500000,30987,30987
+106,"-- Query 10: Change the date range for l_receiptdate
+SELECT
+    l_shipmode,
+    SUM(
+        CASE
+            WHEN o_orderpriority = '1-URGENT' OR o_orderpriority = '2-HIGH' THEN 1
+            ELSE 0
+        END
+    ) AS high_line_count,
+    SUM(
+        CASE
+            WHEN o_orderpriority <> '1-URGENT' AND o_orderpriority <> '2-HIGH' THEN 1
+            ELSE 0
+        END
+    ) AS low_line_count
+FROM
+    orders,
+    lineitem
+WHERE
+    o_orderkey = l_orderkey
+    AND l_shipmode IN ('MAIL', 'SHIP')
+    AND l_commitdate < l_receiptdate
+    AND l_shipdate < l_commitdate
+    AND l_receiptdate >= DATE '1993-01-01' -- Changed start date
+    AND l_receiptdate < DATE '1993-01-01' + INTERVAL '1 year' -- Changed end date
+GROUP BY
+    l_shipmode
+ORDER BY
+    l_shipmode",0.4361,0.4751555,Aggregate,False,209539.39,209786.73,7,27,423.887,426.802,2,1,7501215,2,2,6,6,31170,31170,1500000,31170,31170
+107,"-- Query 1: Change the LIKE condition in CASE statement
+SELECT
+    100.00 * SUM(
+        CASE
+            WHEN p_type LIKE 'ECONOMY%' THEN l_extendedprice * (1 - l_discount) -- Changed LIKE condition
+            ELSE 0
+        END
+    ) / SUM(l_extendedprice * (1 - l_discount)) AS promo_revenue
+FROM
+    lineitem,
+    part
+WHERE
+    l_partkey = p_partkey
+    AND l_shipdate >= DATE '1994-09-01'
+    AND l_shipdate < DATE '1994-09-01' + INTERVAL '1 month'",0.31310000000000004,0.3127504,Aggregate,False,157771.8,157771.81,1,32,259.952,263.226,1,1,6201215,1,1,3,3,75306,75306,200001,200001
+108,"-- Query 2: Adjust date range for l_shipdate
+SELECT
+    100.00 * SUM(
+        CASE
+            WHEN p_type LIKE 'PROMO%' THEN l_extendedprice * (1 - l_discount)
+            ELSE 0
+        END
+    ) / SUM(l_extendedprice * (1 - l_discount)) AS promo_revenue
+FROM
+    lineitem,
+    part
+WHERE
+    l_partkey = p_partkey
+    AND l_shipdate >= DATE '1993-09-01' -- Adjusted start date
+    AND l_shipdate < DATE '1993-09-01' + INTERVAL '1 month'",0.2775,0.3071207,Aggregate,False,157746.24,157746.25,1,32,261.911,265.32,1,1,6201215,1,1,3,3,74937,74937,200001,200001
+109,"-- Adjusted end date
+
+-- Query 3: Change the division to calculate a different metric
+SELECT
+    100.00 * SUM(
+        CASE
+            WHEN p_type LIKE 'PROMO%' THEN l_extendedprice * (1 - l_discount)
+            ELSE 0
+        END
+    ) / COUNT(*) AS promo_revenue_percentage -- Changed division to use COUNT(*)
+FROM
+    lineitem,
+    part
+WHERE
+    l_partkey = p_partkey
+    AND l_shipdate >= DATE '1994-09-01'
+    AND l_shipdate < DATE '1994-09-01' + INTERVAL '1 month'",0.2831,0.3020389,Aggregate,False,157608.2,157608.22,1,32,258.722,262.119,1,1,6201215,1,1,3,3,75306,75306,200001,200001
+110,"-- Query 4: Remove the LIKE condition in CASE statement
+SELECT
+    100.00 * SUM(
+        CASE
+            WHEN p_type = 'ECONOMY' THEN l_extendedprice * (1 - l_discount) -- Removed LIKE condition
+            ELSE 0
+        END
+    ) / SUM(l_extendedprice * (1 - l_discount)) AS promo_revenue
+FROM
+    lineitem,
+    part
+WHERE
+    l_partkey = p_partkey
+    AND l_shipdate >= DATE '1994-09-01'
+    AND l_shipdate < DATE '1994-09-01' + INTERVAL '1 month'",0.2821,0.3002226,Aggregate,False,157771.8,157771.81,1,32,259.801,263.256,1,1,6201215,1,1,3,3,75306,75306,200001,200001
+111,"-- Query 5: Change the aggregation to MAX instead of SUM
+SELECT
+    100.00 * MAX(
+        CASE
+            WHEN p_type LIKE 'PROMO%' THEN l_extendedprice * (1 - l_discount)
+            ELSE 0
+        END
+    ) / SUM(l_extendedprice * (1 - l_discount)) AS promo_revenue_max -- Changed aggregation to MAX
+FROM
+    lineitem,
+    part
+WHERE
+    l_partkey = p_partkey
+    AND l_shipdate >= DATE '1994-09-01'
+    AND l_shipdate < DATE '1994-09-01' + INTERVAL '1 month'",0.2811,0.3031033,Aggregate,False,157771.79,157771.8,1,32,261.618,265.037,1,1,6201215,1,1,3,3,75306,75306,200001,200001
+112,"-- Query 6: Add an additional condition in the WHERE clause
+SELECT
+    100.00 * SUM(
+        CASE
+            WHEN p_type LIKE 'PROMO%' THEN l_extendedprice * (1 - l_discount)
+            ELSE 0
+        END
+    ) / SUM(l_extendedprice * (1 - l_discount)) AS promo_revenue
+FROM
+    lineitem,
+    part
+WHERE
+    l_partkey = p_partkey
+    AND l_shipdate >= DATE '1994-09-01'
+    AND l_shipdate < DATE '1994-09-01' + INTERVAL '1 month'
+    AND p_brand = 'BrandX'",0.0497,0.0635552,Aggregate,False,156365.82,156365.83,1,32,23.947,26.534,1,1,6201215,1,1,0,0,0,0,0
+113,"-- Added additional condition
+
+-- Query 7: Change the CASE condition to include a new category
+SELECT
+    100.00 * SUM(
+        CASE
+            WHEN p_type LIKE 'PROMO%' OR p_type LIKE 'DISCOUNT%' THEN l_extendedprice * (1 - l_discount) -- Changed CASE condition
+            ELSE 0
+        END
+    ) / SUM(l_extendedprice * (1 - l_discount)) AS promo_revenue
+FROM
+    lineitem,
+    part
+WHERE
+    l_partkey = p_partkey
+    AND l_shipdate >= DATE '1994-09-01'
+    AND l_shipdate < DATE '1994-09-01' + INTERVAL '1 month'",0.2828,0.3051688,Aggregate,False,157853.59,157853.6,1,32,264.014,267.56,1,1,6201215,1,1,3,3,75306,75306,200001,200001
+114,"-- Query 8: Change the LIKE condition to a NOT LIKE condition
+SELECT
+    100.00 * SUM(
+        CASE
+            WHEN p_type NOT LIKE 'PROMO%' THEN l_extendedprice * (1 - l_discount) -- Changed LIKE to NOT LIKE condition
+            ELSE 0
+        END
+    ) / SUM(l_extendedprice * (1 - l_discount)) AS promo_revenue_not_promo
+FROM
+    lineitem,
+    part
+WHERE
+    l_partkey = p_partkey
+    AND l_shipdate >= DATE '1994-09-01'
+    AND l_shipdate < DATE '1994-09-01' + INTERVAL '1 month'",0.2871,0.3092158,Aggregate,False,157771.8,157771.81,1,32,263.4,266.733,1,1,6201215,1,1,3,3,75306,75306,200001,200001
+115,"-- Query 9: Change the division to SUM(l_quantity) instead of SUM(l_extendedprice)
+SELECT
+    100.00 * SUM(
+        CASE
+            WHEN p_type LIKE 'PROMO%' THEN l_extendedprice * (1 - l_discount)
+            ELSE 0
+        END
+    ) / SUM(l_quantity) AS promo_revenue_per_quantity -- Changed division to SUM(l_quantity)
+FROM
+    lineitem,
+    part
+WHERE
+    l_partkey = p_partkey
+    AND l_shipdate >= DATE '1994-09-01'
+    AND l_shipdate < DATE '1994-09-01' + INTERVAL '1 month'",0.2762,0.3041242,Aggregate,False,157608.21,157608.23,1,32,254.942,258.396,1,1,6201215,1,1,3,3,75306,75306,200001,200001
+116,"-- Query 10: Change the division to SUM(l_discount) instead of SUM(l_extendedprice * (1 - l_discount))
+SELECT
+    100.00 * SUM(
+        CASE
+            WHEN p_type LIKE 'PROMO%' THEN l_extendedprice * (1 - l_discount)
+            ELSE 0
+        END
+    ) / SUM(l_discount) AS promo_revenue_per_discount -- Changed division to SUM(l_discount)
+FROM
+    lineitem,
+    part
+WHERE
+    l_partkey = p_partkey
+    AND l_shipdate >= DATE '1994-09-01'
+    AND l_shipdate < DATE '1994-09-01' + INTERVAL '1 month'",0.2766,0.2991122,Aggregate,False,157608.21,157608.23,1,32,257.278,260.729,1,1,6201215,1,1,3,3,75306,75306,200001,200001
+117,"-- Query 1: Change p_brand condition to '='
+SELECT
+    p_brand,
+    p_type,
+    p_size,
+    COUNT(DISTINCT ps_suppkey) AS supplier_cnt
+FROM
+    partsupp,
+    part
+WHERE
+    p_partkey = ps_partkey
+    AND p_brand = 'Brand#34' -- Changed to '=' condition
+    AND p_type NOT LIKE 'TYPE%'
+    AND p_size IN (1, 2, 3, 4, 5, 6, 7, 8)
+    AND ps_suppkey NOT IN (
+        SELECT
+            s_suppkey
+        FROM
+            supplier
+        WHERE
+            s_comment LIKE '%Customer%Complaints%'
+    )
+GROUP BY
+    p_brand,
+    p_type,
+    p_size
+ORDER BY
+    supplier_cnt DESC,
+    p_brand,
+    p_type,
+    p_size",0.061200000000000004,0.061751600000000004,Sort,False,25542.8,25545.78,1193,44,66.171,67.578,802,1,1000000,802,802,802,5192,5193,5193,799680,12,1299,1299
+118,"-- Query 2: Change p_type condition to LIKE
+SELECT
+    p_brand,
+    p_type,
+    p_size,
+    COUNT(DISTINCT ps_suppkey) AS supplier_cnt
+FROM
+    partsupp,
+    part
+WHERE
+    p_partkey = ps_partkey
+    AND p_brand <> 'Brand#34'
+    AND p_type LIKE 'TYPE%' -- Changed to LIKE condition
+    AND p_size IN (1, 2, 3, 4, 5, 6, 7, 8)
+    AND ps_suppkey NOT IN (
+        SELECT
+            s_suppkey
+        FROM
+            supplier
+        WHERE
+            s_comment LIKE '%Customer%Complaints%'
+    )
+GROUP BY
+    p_brand,
+    p_type,
+    p_size
+ORDER BY
+    supplier_cnt DESC,
+    p_brand,
+    p_type,
+    p_size",0.0163,0.0125804,Sort,False,7566.0,7566.01,3,44,15.627,17.709,0,1,1000000,0,0,0,0,0,0,0,0,0
+119,"-- Query 3: Add an additional size in p_size condition
+SELECT
+    p_brand,
+    p_type,
+    p_size,
+    COUNT(DISTINCT ps_suppkey) AS supplier_cnt
+FROM
+    partsupp,
+    part
+WHERE
+    p_partkey = ps_partkey
+    AND p_brand <> 'Brand#34'
+    AND p_type NOT LIKE 'TYPE%'
+    AND p_size IN (1, 2, 3, 4, 5, 6, 7, 8, 9) -- Added additional size
+    AND ps_suppkey NOT IN (
+        SELECT
+            s_suppkey
+        FROM
+            supplier
+        WHERE
+            s_comment LIKE '%Customer%Complaints%'
+    )
+GROUP BY
+    p_brand,
+    p_type,
+    p_size
+ORDER BY
+    supplier_cnt DESC,
+    p_brand,
+    p_type,
+    p_size",0.1809,0.37472289999999997,Sort,False,36773.24,36815.85,17042,44,235.688,236.775,21374,1,1000000,21374,21374,21374,139367,139368,139368,799680,12,34857,34857
+120,"-- Query 4: Change the NOT IN subquery condition
+SELECT
+    p_brand,
+    p_type,
+    p_size,
+    COUNT(DISTINCT ps_suppkey) AS supplier_cnt
+FROM
+    partsupp,
+    part
+WHERE
+    p_partkey = ps_partkey
+    AND p_brand <> 'Brand#34'
+    AND p_type NOT LIKE 'TYPE%'
+    AND p_size IN (1, 2, 3, 4, 5, 6, 7, 8)
+    AND ps_suppkey IN ( -- Changed to IN condition
+        SELECT
+            s_suppkey
+        FROM
+            supplier
+        WHERE
+            s_comment NOT LIKE '%Customer%Complaints%' -- Changed to NOT LIKE condition
+    )
+GROUP BY
+    p_brand,
+    p_type,
+    p_size
+ORDER BY
+    supplier_cnt DESC,
+    p_brand,
+    p_type,
+    p_size",0.1387,0.4056106,Sort,False,38601.5,38642.16,16264,44,187.894,188.501,18980,1,1000000,18980,18980,18980,123807,123807,123807,123861,30966,123860,29988,29988
+121,"-- Query 5: Remove p_size condition
+SELECT
+    p_brand,
+    p_type,
+    p_size,
+    COUNT(DISTINCT ps_suppkey) AS supplier_cnt
+FROM
+    partsupp,
+    part
+WHERE
+    p_partkey = ps_partkey
+    AND p_brand <> 'Brand#34'
+    AND p_type NOT LIKE 'TYPE%'
+    -- Removed p_size condition
+    AND ps_suppkey NOT IN (
+        SELECT
+            s_suppkey
+        FROM
+            supplier
+        WHERE
+            s_comment LIKE '%Customer%Complaints%'
+    )
+GROUP BY
+    p_brand,
+    p_type,
+    p_size
+ORDER BY
+    supplier_cnt DESC,
+    p_brand,
+    p_type,
+    p_size",0.706,2.0942911,Sort,False,89358.01,89408.01,20000,44,2039.616,2058.621,118158,1,1000000,118158,118158,118158,767637,767637,799680,4,191986
+122,"-- Query 6: Change the ORDER BY to p_type DESC
+SELECT
+    p_brand,
+    p_type,
+    p_size,
+    COUNT(DISTINCT ps_suppkey) AS supplier_cnt
+FROM
+    partsupp,
+    part
+WHERE
+    p_partkey = ps_partkey
+    AND p_brand <> 'Brand#34'
+    AND p_type NOT LIKE 'TYPE%'
+    AND p_size IN (1, 2, 3, 4, 5, 6, 7, 8)
+    AND ps_suppkey NOT IN (
+        SELECT
+            s_suppkey
+        FROM
+            supplier
+        WHERE
+            s_comment LIKE '%Customer%Complaints%'
+    )
+GROUP BY
+    p_brand,
+    p_type,
+    p_size
+ORDER BY
+    p_type DESC, -- Changed ORDER BY to p_type DESC
+    supplier_cnt DESC,
+    p_brand,
+    p_size",0.1676,0.33585139999999997,Sort,False,35898.06,35938.72,16264,44,205.386,206.192,18980,1,1000000,18980,18980,18980,123807,123807,123807,799680,12,30966,30966
+123,"-- Query 7: Change the GROUP BY to p_brand only
+SELECT
+    p_brand,
+    MAX(p_type) AS p_type,
+    MAX(p_size) AS p_size,
+    COUNT(DISTINCT ps_suppkey) AS supplier_cnt
+FROM
+    partsupp,
+    part
+WHERE
+    p_partkey = ps_partkey
+    AND p_brand <> 'Brand#34'
+    AND p_type NOT LIKE 'TYPE%'
+    AND p_size IN (1, 2, 3, 4, 5, 6, 7, 8)
+    AND ps_suppkey NOT IN (
+        SELECT
+            s_suppkey
+        FROM
+            supplier
+        WHERE
+            s_comment LIKE '%Customer%Complaints%'
+    )
+GROUP BY
+    p_brand
+ORDER BY
+    supplier_cnt DESC,
+    p_brand",0.1021,0.1515959,Sort,False,34598.63,34598.7,25,55,146.054,148.704,24,1,1000000,24,24,24,123807,123807,123807,799680,12,30966,30966
+124,"-- Query 8: Change the aggregation to MIN for p_size
+SELECT
+    p_brand,
+    p_type,
+    MIN(p_size) AS p_size, -- Changed aggregation to MIN for p_size
+    COUNT(DISTINCT ps_suppkey) AS supplier_cnt
+FROM
+    partsupp,
+    part
+WHERE
+    p_partkey = ps_partkey
+    AND p_brand <> 'Brand#34'
+    AND p_type NOT LIKE 'TYPE%'
+    AND p_size IN (1, 2, 3, 4, 5, 6, 7, 8)
+    AND ps_suppkey NOT IN (
+        SELECT
+            s_suppkey
+        FROM
+            supplier
+        WHERE
+            s_comment LIKE '%Customer%Complaints%'
+    )
+GROUP BY
+    p_brand,
+    p_type
+ORDER BY
+    supplier_cnt DESC,
+    p_brand,
+    p_type",0.1407,0.27128250000000004,Sort,False,34857.92,34867.29,3750,44,176.517,176.909,3600,1,1000000,3600,3600,3600,123807,123807,123807,799680,12,30966,30966
+125,"-- Query 10: Add a new condition to the WHERE clause for p_brand
+SELECT
+    p_brand,
+    p_type,
+    p_size,
+    COUNT(DISTINCT ps_suppkey) AS supplier_cnt
+FROM
+    partsupp,
+    part
+WHERE
+    p_partkey = ps_partkey
+    AND (p_brand <> 'Brand#34' OR p_brand = 'Brand#56') -- Added new condition for p_brand
+    AND p_type NOT LIKE 'TYPE%'
+    AND p_size IN (1, 2, 3, 4, 5, 6, 7, 8)
+    AND ps_suppkey NOT IN (
+        SELECT
+            s_suppkey
+        FROM
+            supplier
+        WHERE
+            s_comment LIKE '%Customer%Complaints%'
+    )
+GROUP BY
+    p_brand,
+    p_type,
+    p_size
+ORDER BY
+    supplier_cnt DESC,
+    p_brand,
+    p_type,
+    p_size",0.1702,0.3402706,Sort,False,36106.4,36147.06,16264,44,210.294,211.123,18980,1,1000000,18980,18980,18980,123807,123807,123807,799680,12,30966,30966
+126,"-- Query 1: Change the HAVING condition to SUM(l_quantity) > 500
+SELECT
+    c_name,
+    c_custkey,
+    o_orderkey,
+    o_orderdate,
+    o_totalprice,
+    SUM(l_quantity)
+FROM
+    customer,
+    orders,
+    lineitem
+WHERE
+    o_orderkey IN (
+        SELECT
+            l_orderkey
+        FROM
+            lineitem
+        GROUP BY
+            l_orderkey
+        HAVING
+            SUM(l_quantity) > 500 -- Changed HAVING condition to SUM(l_quantity) > 500
+    )
+    AND c_custkey = o_custkey
+    AND o_orderkey = l_orderkey
+GROUP BY
+    c_name,
+    c_custkey,
+    o_orderkey,
+    o_orderdate,
+    o_totalprice
+ORDER BY
+    o_totalprice DESC,
+    o_orderdate",1.2377,2.0711284,Aggregate,False,860691.64,874844.21,514639,71,2561.653,2576.559,0,1,7651215,0,0,0,0,1,0,0,0,1,0,0,1501625,1501626,1501626,6001215,150000,150000
+127,"-- Query 2: Change the ORDER BY to o_orderdate ASC
+SELECT
+    c_name,
+    c_custkey,
+    o_orderkey,
+    o_orderdate,
+    o_totalprice,
+    SUM(l_quantity)
+FROM
+    customer,
+    orders,
+    lineitem
+WHERE
+    o_orderkey IN (
+        SELECT
+            l_orderkey
+        FROM
+            lineitem
+        GROUP BY
+            l_orderkey
+        HAVING
+            SUM(l_quantity) > 300 -- Standard value from TPC-H
+    )
+    AND c_custkey = o_custkey
+    AND o_orderkey = l_orderkey
+GROUP BY
+    c_name,
+    c_custkey,
+    o_orderkey,
+    o_orderdate,
+    o_totalprice
+ORDER BY
+    o_orderdate ASC",1.6527,3.3527138,Aggregate,False,860691.64,874844.21,514639,71,3718.146,3718.29,57,1,7651215,57,57,399,399,6001215,57,57,57,1500000,57,57,1501631,1501632,1501632,6001215,150000,150000
+128,"-- Changed ORDER BY to o_orderdate ASC
+
+-- Query 3: Add a new condition to the WHERE clause for o_totalprice > 5000
+SELECT
+    c_name,
+    c_custkey,
+    o_orderkey,
+    o_orderdate,
+    o_totalprice,
+    SUM(l_quantity)
+FROM
+    customer,
+    orders,
+    lineitem
+WHERE
+    o_orderkey IN (
+        SELECT
+            l_orderkey
+        FROM
+            lineitem
+        GROUP BY
+            l_orderkey
+        HAVING
+            SUM(l_quantity) > 300 -- Standard value from TPC-H
+    )
+    AND c_custkey = o_custkey
+    AND o_orderkey = l_orderkey
+    AND o_totalprice > 5000 -- Added new condition for o_totalprice > 5000
+GROUP BY
+    c_name,
+    c_custkey,
+    o_orderkey,
+    o_orderdate,
+    o_totalprice
+ORDER BY
+    o_totalprice DESC,
+    o_orderdate",1.679,3.4492928000000003,Aggregate,False,809321.24,823345.75,509982,71,3389.61,3389.779,57,1,7651215,57,57,399,399,399,6001215,57,57,1486787,57,57,1501632,1501632,1501632,6001215,150000,150000
+129,"-- Query 6: Remove the HAVING condition
+SELECT
+    c_name,
+    c_custkey,
+    o_orderkey,
+    o_orderdate,
+    o_totalprice,
+    SUM(l_quantity)
+FROM
+    customer,
+    orders,
+    lineitem
+WHERE
+    o_orderkey IN (
+        SELECT
+            l_orderkey
+        FROM
+            lineitem
+        GROUP BY
+            l_orderkey
+    )
+    AND c_custkey = o_custkey
+    AND o_orderkey = l_orderkey
+GROUP BY
+    c_name,
+    c_custkey,
+    o_orderkey,
+    o_orderdate,
+    o_totalprice
+ORDER BY
+    o_totalprice DESC,
+    o_orderdate",1.3544,11.4337492,Aggregate,False,1044187.36,1086644.97,1543913,71,8342.859,10976.481,1500000,1,7651215,1500000,1500000,6001215,6001215,6001215,1500000,1500000,1500000,1500000,1500000,1500000,1501612,1501611,6001215,150000,150000
+130,"-- Query 7: Change the INNER JOIN to use explicit JOIN syntax
+SELECT
+    c_name,
+    c_custkey,
+    o_orderkey,
+    o_orderdate,
+    o_totalprice,
+    SUM(l_quantity)
+FROM
+    customer
+JOIN
+    orders ON c_custkey = o_custkey
+JOIN
+    lineitem ON o_orderkey = l_orderkey
+WHERE
+    o_orderkey IN (
+        SELECT
+            l_orderkey
+        FROM
+            lineitem
+        GROUP BY
+            l_orderkey
+        HAVING
+            SUM(l_quantity) > 300 -- Standard value from TPC-H
+    )
+GROUP BY
+    c_name,
+    c_custkey,
+    o_orderkey,
+    o_orderdate,
+    o_totalprice
+ORDER BY
+    o_totalprice DESC,
+    o_orderdate",1.8556,3.5439873,Aggregate,False,860691.64,874844.21,514639,71,3715.371,3715.513,57,1,7651215,57,57,399,399,6001215,57,57,57,1500000,57,57,1501634,1501635,1501635,6001215,150000,150000
+131,"-- Query 8: Add an additional condition for o_orderdate
+SELECT
+    c_name,
+    c_custkey,
+    o_orderkey,
+    o_orderdate,
+    o_totalprice,
+    SUM(l_quantity)
+FROM
+    customer,
+    orders,
+    lineitem
+WHERE
+    o_orderkey IN (
+        SELECT
+            l_orderkey
+        FROM
+            lineitem
+        GROUP BY
+            l_orderkey
+        HAVING
+            SUM(l_quantity) > 300 -- Standard value from TPC-H
+    )
+    AND c_custkey = o_custkey
+    AND o_orderkey = l_orderkey
+    AND o_orderdate >= DATE '1995-01-01' -- Additional condition for o_orderdate
+GROUP BY
+    c_name,
+    c_custkey,
+    o_orderkey,
+    o_orderdate,
+    o_totalprice
+ORDER BY
+    o_totalprice DESC,
+    o_orderdate",1.585,3.2059348,Aggregate,False,767394.53,775138.89,281613,71,3357.989,3358.098,35,1,7651215,35,35,245,245,6001215,35,35,35,818669,57,57,1501632,1501632,1501632,6001215,150000,150000
+132,"-- Query 9: Change the SUM(l_quantity) aggregation to AVG(l_quantity)
+SELECT
+    c_name,
+    c_custkey,
+    o_orderkey,
+    o_orderdate,
+    o_totalprice,
+    AVG(l_quantity) AS avg_quantity -- Changed aggregation to AVG(l_quantity)
+FROM
+    customer,
+    orders,
+    lineitem
+WHERE
+    o_orderkey IN (
+        SELECT
+            l_orderkey
+        FROM
+            lineitem
+        GROUP BY
+            l_orderkey
+        HAVING
+            SUM(l_quantity) > 300 -- Standard value from TPC-H
+    )
+    AND c_custkey = o_custkey
+    AND o_orderkey = l_orderkey
+GROUP BY
+    c_name,
+    c_custkey,
+    o_orderkey,
+    o_orderdate,
+    o_totalprice
+ORDER BY
+    o_totalprice DESC,
+    o_orderdate",1.6632,3.37712,Aggregate,False,860691.64,874844.21,514639,71,3724.563,3724.71,57,1,7651215,57,57,399,399,6001215,57,57,57,1500000,57,57,1501634,1501635,1501635,6001215,150000,150000
+133,"-- Query 10: Change the ORDER BY to c_custkey
+SELECT
+    c_name,
+    c_custkey,
+    o_orderkey,
+    o_orderdate,
+    o_totalprice,
+    SUM(l_quantity)
+FROM
+    customer,
+    orders,
+    lineitem
+WHERE
+    o_orderkey IN (
+        SELECT
+            l_orderkey
+        FROM
+            lineitem
+        GROUP BY
+            l_orderkey
+        HAVING
+            SUM(l_quantity) > 300 -- Standard value from TPC-H
+    )
+    AND c_custkey = o_custkey
+    AND o_orderkey = l_orderkey
+GROUP BY
+    c_name,
+    c_custkey,
+    o_orderkey,
+    o_orderdate,
+    o_totalprice
+ORDER BY
+    c_custkey",1.6657,3.3683139,Aggregate,False,860691.64,874844.21,514639,71,3698.192,3698.333,57,1,7651215,57,57,399,399,6001215,57,57,57,1500000,57,57,1501630,1501629,1501629,6001215,150000,150000
+134,"-- Query 1: Change p_brand and p_container values
+SELECT
+    SUM(l_extendedprice * (1 - l_discount)) AS revenue
+FROM
+    lineitem,
+    part
+WHERE
+    (
+        (p_partkey = l_partkey
+            AND p_brand = 'Brand#15' -- Changed p_brand value
+            AND p_container IN ('LG CASE', 'LG BOX', 'LG PACK', 'LG PKG') -- Standard values from TPC-H
+            AND l_quantity BETWEEN 35 AND 45) -- Standard value from TPC-H
+        OR
+        (p_partkey = l_partkey
+            AND p_brand = 'Brand#24' -- Changed p_brand value
+            AND p_container IN ('MED BAG', 'MED BOX', 'MED PKG', 'MED PACK') -- Standard values from TPC-H
+            AND l_quantity BETWEEN 30 AND 40) -- Standard value from TPC-H
+        OR
+        (p_partkey = l_partkey
+            AND p_brand = 'Brand#33' -- Changed p_brand value
+            AND p_container IN ('SM CASE', 'SM BOX', 'SM PACK', 'SM PKG') -- Standard values from TPC-H
+            AND l_quantity BETWEEN 25 AND 35) -- Standard value from TPC-H
+    )",0.446,0.4797322,Aggregate,False,186480.97,186480.98,1,32,434.342,439.318,1,1,6201215,1,1,3,3,15741,2522532,2415,2415
+135,"-- Query 2: Change l_quantity range
+SELECT
+    SUM(l_extendedprice * (1 - l_discount)) AS revenue
+FROM
+    lineitem,
+    part
+WHERE
+    (
+        (p_partkey = l_partkey
+            AND p_brand = 'Brand#12' -- Standard value from TPC-H
+            AND p_container IN ('SM CASE', 'SM BOX', 'SM PACK', 'SM PKG') -- Standard values from TPC-H
+            AND l_quantity BETWEEN 30 AND 40) -- Changed l_quantity range
+        OR
+        (p_partkey = l_partkey
+            AND p_brand = 'Brand#23' -- Standard value from TPC-H
+            AND p_container IN ('MED BAG', 'MED BOX', 'MED PKG', 'MED PACK') -- Standard values from TPC-H
+            AND l_quantity BETWEEN 35 AND 45) -- Standard value from TPC-H
+        OR
+        (p_partkey = l_partkey
+            AND p_brand = 'Brand#34' -- Standard value from TPC-H
+            AND p_container IN ('LG CASE', 'LG BOX', 'LG PACK', 'LG PKG') -- Standard values from TPC-H
+            AND l_quantity BETWEEN 25 AND 35) -- Standard value from TPC-H
+    )",0.4365,0.46964300000000003,Aggregate,False,186482.65,186482.66,1,32,450.946,454.695,1,1,6201215,1,1,3,3,15252,2522532,2322,2322
+136,"-- Query 3: Add an additional p_brand condition
+SELECT
+    SUM(l_extendedprice * (1 - l_discount)) AS revenue
+FROM
+    lineitem,
+    part
+WHERE
+    (
+        (p_partkey = l_partkey
+            AND p_brand = 'Brand#12' -- Standard value from TPC-H
+            AND p_container IN ('SM CASE', 'SM BOX', 'SM PACK', 'SM PKG') -- Standard values from TPC-H
+            AND l_quantity BETWEEN 25 AND 35) -- Standard value from TPC-H
+        OR
+        (p_partkey = l_partkey
+            AND p_brand = 'Brand#23' -- Standard value from TPC-H
+            AND p_container IN ('MED BAG', 'MED BOX', 'MED PKG', 'MED PACK') -- Standard values from TPC-H
+            AND l_quantity BETWEEN 30 AND 40) -- Standard value from TPC-H
+        OR
+        (p_partkey = l_partkey
+            AND p_brand = 'Brand#35' -- Added new p_brand value
+            AND p_container IN ('LG CASE', 'LG BOX', 'LG PACK', 'LG PKG') -- Standard values from TPC-H
+            AND l_quantity BETWEEN 35 AND 45) -- Standard value from TPC-H
+    )",0.4474,0.4888299,Aggregate,False,186482.96,186482.97,1,32,452.666,455.981,1,1,6201215,1,1,3,3,15864,2522532,2379,2379
+137,"-- Query 4: Change p_container values
+SELECT
+    SUM(l_extendedprice * (1 - l_discount)) AS revenue
+FROM
+    lineitem,
+    part
+WHERE
+    (
+        (p_partkey = l_partkey
+            AND p_brand = 'Brand#12' -- Standard value from TPC-H
+            AND p_container IN ('MED CASE', 'MED BOX', 'MED PACK', 'MED PKG') -- Changed p_container values
+            AND l_quantity BETWEEN 25 AND 35) -- Standard value from TPC-H
+        OR
+        (p_partkey = l_partkey
+            AND p_brand = 'Brand#23' -- Standard value from TPC-H
+            AND p_container IN ('SM BAG', 'SM BOX', 'SM PKG', 'SM PACK') -- Changed p_container values
+            AND l_quantity BETWEEN 30 AND 40) -- Standard value from TPC-H
+        OR
+        (p_partkey = l_partkey
+            AND p_brand = 'Brand#34' -- Standard value from TPC-H
+            AND p_container IN ('LG CASE', 'LG BOX', 'LG PACK', 'LG PKG') -- Standard values from TPC-H
+            AND l_quantity BETWEEN 35 AND 45) -- Standard value from TPC-H
+    )",0.45790000000000003,0.4919061,Aggregate,False,186482.71,186482.72,1,32,454.309,457.79,1,1,6201215,1,1,3,3,16080,2522532,2466,2466
+138,"-- Query 5: Change p_brand and p_container values
+SELECT
+    SUM(l_extendedprice * (1 - l_discount)) AS revenue
+FROM
+    lineitem,
+    part
+WHERE
+    (
+        (p_partkey = l_partkey
+            AND p_brand = 'Brand#15' -- Changed p_brand value
+            AND p_container IN ('LG CASE', 'LG BOX', 'LG PACK', 'LG PKG') -- Standard values from TPC-H
+            AND l_quantity BETWEEN 35 AND 45) -- Standard value from TPC-H
+        OR
+        (p_partkey = l_partkey
+            AND p_brand = 'Brand#24' -- Changed p_brand value
+            AND p_container IN ('MED BAG', 'MED BOX', 'MED PKG', 'MED PACK') -- Standard values from TPC-H
+            AND l_quantity BETWEEN 30 AND 40) -- Standard value from TPC-H
+        OR
+        (p_partkey = l_partkey
+            AND p_brand = 'Brand#33' -- Changed p_brand value
+            AND p_container IN ('SM CASE', 'SM BOX', 'SM PACK', 'SM PKG') -- Standard values from TPC-H
+            AND l_quantity BETWEEN 25 AND 35) -- Standard value from TPC-H
+    )",0.4435,0.4738751,Aggregate,False,186480.97,186480.98,1,32,431.809,435.086,1,1,6201215,1,1,3,3,15741,2522532,2415,2415
+139,"-- Query 6: Change l_quantity range
+SELECT
+    SUM(l_extendedprice * (1 - l_discount)) AS revenue
+FROM
+    lineitem,
+    part
+WHERE
+    (
+        (p_partkey = l_partkey
+            AND p_brand = 'Brand#12' -- Standard value from TPC-H
+            AND p_container IN ('SM CASE', 'SM BOX', 'SM PACK', 'SM PKG') -- Standard values from TPC-H
+            AND l_quantity BETWEEN 30 AND 40) -- Changed l_quantity range
+        OR
+        (p_partkey = l_partkey
+            AND p_brand = 'Brand#23' -- Standard value from TPC-H
+            AND p_container IN ('MED BAG', 'MED BOX', 'MED PKG', 'MED PACK') -- Standard values from TPC-H
+            AND l_quantity BETWEEN 35 AND 45) -- Standard value from TPC-H
+        OR
+        (p_partkey = l_partkey
+            AND p_brand = 'Brand#34' -- Standard value from TPC-H
+            AND p_container IN ('LG CASE', 'LG BOX', 'LG PACK', 'LG PKG') -- Standard values from TPC-H
+            AND l_quantity BETWEEN 25 AND 35) -- Standard value from TPC-H
+    )",0.4467,0.4878368,Aggregate,False,186482.65,186482.66,1,32,438.894,442.078,1,1,6201215,1,1,3,3,15252,2522532,2322,2322
+140,"-- Query 7: Add an additional p_brand condition
+SELECT
+    SUM(l_extendedprice * (1 - l_discount)) AS revenue
+FROM
+    lineitem,
+    part
+WHERE
+    (
+        (p_partkey = l_partkey
+            AND p_brand = 'Brand#12' -- Standard value from TPC-H
+            AND p_container IN ('SM CASE', 'SM BOX', 'SM PACK', 'SM PKG') -- Standard values from TPC-H
+            AND l_quantity BETWEEN 25 AND 35) -- Standard value from TPC-H
+        OR
+        (p_partkey = l_partkey
+            AND p_brand = 'Brand#23' -- Standard value from TPC-H
+            AND p_container IN ('MED BAG', 'MED BOX', 'MED PKG', 'MED PACK') -- Standard values from TPC-H
+            AND l_quantity BETWEEN 30 AND 40) -- Standard value from TPC-H
+        OR
+        (p_partkey = l_partkey
+            AND p_brand = 'Brand#35' -- Added new p_brand value
+            AND p_container IN ('LG CASE', 'LG BOX', 'LG PACK', 'LG PKG') -- Standard values from TPC-H
+            AND l_quantity BETWEEN 35 AND 45) -- Standard value from TPC-H
+    )",0.4707,0.49391450000000003,Aggregate,False,186482.96,186482.97,1,32,454.71,458.018,1,1,6201215,1,1,3,3,15864,2522532,2379,2379
+141,"-- Query 8: Change p_container values
+SELECT
+    SUM(l_extendedprice * (1 - l_discount)) AS revenue
+FROM
+    lineitem,
+    part
+WHERE
+    (
+        (p_partkey = l_partkey
+            AND p_brand = 'Brand#12' -- Standard value from TPC-H
+            AND p_container IN ('MED CASE', 'MED BOX', 'MED PACK', 'MED PKG') -- Changed p_container values
+            AND l_quantity BETWEEN 25 AND 35) -- Standard value from TPC-H
+        OR
+        (p_partkey = l_partkey
+            AND p_brand = 'Brand#23' -- Standard value from TPC-H
+            AND p_container IN ('SM BAG', 'SM BOX', 'SM PKG', 'SM PACK') -- Changed p_container values
+            AND l_quantity BETWEEN 30 AND 40) -- Standard value from TPC-H
+        OR
+        (p_partkey = l_partkey
+            AND p_brand = 'Brand#34' -- Standard value from TPC-H
+            AND p_container IN ('LG CASE', 'LG BOX', 'LG PACK', 'LG PKG') -- Standard values from TPC-H
+            AND l_quantity BETWEEN 35 AND 45) -- Standard value from TPC-H
+    )",0.4675,0.5045721,Aggregate,False,186482.71,186482.72,1,32,452.979,456.428,1,1,6201215,1,1,3,3,16080,2522532,2466,2466
+142,"-- Query 9: Change p_brand and p_container values
+SELECT
+    SUM(l_extendedprice * (1 - l_discount)) AS revenue
+FROM
+    lineitem,
+    part
+WHERE
+    (
+        (p_partkey = l_partkey
+            AND p_brand = 'Brand#15' -- Changed p_brand value
+            AND p_container IN ('LG CASE', 'LG BOX', 'LG PACK', 'LG PKG') -- Standard values from TPC-H
+            AND l_quantity BETWEEN 35 AND 45) -- Standard value from TPC-H
+        OR
+        (p_partkey = l_partkey
+            AND p_brand = 'Brand#24' -- Changed p_brand value
+            AND p_container IN ('MED BAG', 'MED BOX', 'MED PKG', 'MED PACK') -- Standard values from TPC-H
+            AND l_quantity BETWEEN 30 AND 40) -- Standard value from TPC-H
+        OR
+        (p_partkey = l_partkey
+            AND p_brand = 'Brand#33' -- Changed p_brand value
+            AND p_container IN ('SM CASE', 'SM BOX', 'SM PACK', 'SM PKG') -- Standard values from TPC-H
+            AND l_quantity BETWEEN 25 AND 35) -- Standard value from TPC-H
+    )",0.4346,0.4774905,Aggregate,False,186480.97,186480.98,1,32,440.615,444.417,1,1,6201215,1,1,3,3,15741,2522532,2415,2415
+143,"-- Query 10: Change l_quantity range
+SELECT
+    SUM(l_extendedprice * (1 - l_discount)) AS revenue
+FROM
+    lineitem,
+    part
+WHERE
+    (
+        (p_partkey = l_partkey
+            AND p_brand = 'Brand#12' -- Standard value from TPC-H
+            AND p_container IN ('SM CASE', 'SM BOX', 'SM PACK', 'SM PKG') -- Standard values from TPC-H
+            AND l_quantity BETWEEN 30 AND 40) -- Changed l_quantity range
+        OR
+        (p_partkey = l_partkey
+            AND p_brand = 'Brand#23' -- Standard value from TPC-H
+            AND p_container IN ('MED BAG', 'MED BOX', 'MED PKG', 'MED PACK') -- Standard values from TPC-H
+            AND l_quantity BETWEEN 35 AND 45) -- Standard value from TPC-H
+        OR
+        (p_partkey = l_partkey
+            AND p_brand = 'Brand#34' -- Standard value from TPC-H
+            AND p_container IN ('LG CASE', 'LG BOX', 'LG PACK', 'LG PKG') -- Standard values from TPC-H
+            AND l_quantity BETWEEN 25 AND 35) -- Standard value from TPC-H
+    )",0.4358,0.4773442,Aggregate,False,186482.65,186482.66,1,32,504.902,508.561,1,1,6201215,1,1,3,3,15252,2522532,2322,2322
