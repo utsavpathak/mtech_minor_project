@@ -36,7 +36,6 @@ def get_table_names(query):
     return tables
 
 def extract_features(plan, query_index, query, level=1, parent=None, node_num=1):
-    # Extract loop
     loop = plan.get('Actual Loops', 1)
     
     # Extract input cardinality
